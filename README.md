@@ -7,15 +7,19 @@
 
 A modern and responsive Gym Management Dashboard built with HTML, CSS and JavaScript.
 
-## 🌐 Live Demo
+---
 
 ## 🌐 Live Demo
 
 👉 **[Open Gym Pro Dashboard](https://contactdetroitcode-oss.github.io/gym-management/)**
 
+---
+
 ## 📸 Screenshot
 
 ![Gym Pro Dashboard](./screenshot.png)
+
+---
 
 ## ✨ Features
 
@@ -30,9 +34,20 @@ A modern and responsive Gym Management Dashboard built with HTML, CSS and JavaSc
 - 💳 Payments Management
 - 💰 Revenue Tracking
 - 📈 Monthly Revenue Chart
-- 💾 localStorage
+- 💾 LocalStorage Data Persistence
 - 📱 Responsive Design
 - 🚪 Logout System
+
+---
+
+## 🔐 Demo Login
+
+| Field | Value |
+|---|---|
+| Email | `admin@gympro.com` |
+| Password | `1234` |
+
+---
 
 ## 🛠️ Technologies
 
@@ -44,37 +59,20 @@ A modern and responsive Gym Management Dashboard built with HTML, CSS and JavaSc
 - Git
 - GitHub Pages
 
-## 🔐 Demo Login
-
-Email:
-
-admin@gympro.com
-
-Password:
-
-1234
+---
 
 ## 📂 Project Structure
 
+```text
 gym-management/
-
-├── index.html  
-├── style.css  
-├── js.js  
-├── dashboard.html  
-├── dashboard.css  
-├── dashboard.js  
+│
+├── index.html
+├── style.css
+├── js.js
+│
+├── dashboard.html
+├── dashboard.css
+├── dashboard.js
+│
+├── screenshot.png
 └── README.md
-
-## 🎯 Project Goal
-
-This project was created as a portfolio project to practice front-end web development and build a realistic gym management system using Vanilla JavaScript.
-
-## 👨‍💻 Author
-
-Oussama
-
-Front-End Web Developer
-
-GitHub:  
-https://github.com/contactdetroitcode-oss
