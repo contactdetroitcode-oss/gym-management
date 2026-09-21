@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Gym Pro - Dashboard</title>
+
+    <link
+        rel="stylesheet"
+        href="dashboard.css"
+    >
+
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+
+        <!-- =========================
+             SIDEBAR
+        ========================== -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+
+                <h2>GYM PRO</h2>
+
+                <span>
+                    Management System
+                </span>
+
+            </div>
+
+
+            <nav class="sidebar-menu">
+
+                <a
+                    href="#dashboard"
+                    class="menu-item active"
+                >
+                    <span class="menu-icon">🏠</span>
+                    <span>Dashboard</span>
+                </a>
+
+
+                <a
+                    href="#members"
+                    class="menu-item"
+                >
+                    <span class="menu-icon">👥</span>
+                    <span>Members</span>
+                </a>
+
+
+                <a
+                    href="#payments"
+                    class="menu-item"
+                >
+                    <span class="menu-icon">💳</span>
+                    <span>Payments</span>
+                </a>
+
+
+                <a
+                    href="#analytics"
+                    class="menu-item"
+                >
+                    <span class="menu-icon">📊</span>
+                    <span>Analytics</span>
+                </a>
+
+            </nav>
+
+
+            <button
+                id="logoutBtn"
+                class="logout-btn"
+            >
+                <span>🚪</span>
+                <span>Logout</span>
+            </button>
+
+        </aside>
+
+
+        <!-- =========================
+             MAIN
+        ========================== -->
+
+        <main class="dashboard-main">
+
+            <!-- HEADER -->
+
+            <header
+                class="dashboard-header"
+                id="dashboard"
+            >
+
+                <div>
+
+                    <h1>
+                        Dashboard
+                    </h1>
+
+                    <p>
+                        Bienvenue dans votre espace Gym Pro
+                    </p>
+
+                </div>
+
+                <div class="header-user">
+
+                    <div class="user-avatar">
+                        A
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Admin
+                        </strong>
+
+                        <small>
+                            Administrateur
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- =========================
+                 STATISTICS
+            ========================== -->
+
+            <section
+                class="stats-grid"
+                id="analytics"
+            >
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        👥
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Members
+                        </span>
+
+                        <h2 id="totalMembers">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        🟢
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Active Members
+                        </span>
+
+                        <h2 id="activeMembers">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        💰
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Total Payments
+                        </span>
+
+                        <h2 id="totalPayments">
+                            0 DH
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        📅
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Revenue ce mois
+                        </span>
+
+                        <h2 id="monthlyRevenue">
+                            0 DH
+                        </h2>
+
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card expired-card">
+
+                    <div class="stat-icon">
+                        🔴
+                    </div>
+
+                    <div>
+
+                        <span>
+                            Expired Members
+                        </span>
+
+                        <h2 id="expiredMembers">
+                            0
+                        </h2>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 REVENUE CHART
+            ========================== -->
+
+            <section
+                class="chart-section"
+            >
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Revenue par mois
+                        </h2>
+
+                        <p>
+                            Évolution des paiements
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="chart-container">
+
+                    <canvas
+                        id="revenueChart"
+                    ></canvas>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 MEMBERS
+            ========================== -->
+
+            <section
+                class="dashboard-section"
+                id="members"
+            >
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Gestion des membres
+                        </h2>
+
+                        <p>
+                            Ajouter et gérer les membres
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="primary-btn"
+                        id="addMemberBtn"
+                    >
+                        + Ajouter membre
+                    </button>
+
+                </div>
+
+
+                <!-- FILTERS -->
+
+                <div class="filters">
+
+                    <input
+                        type="text"
+                        id="searchMember"
+                        placeholder="🔍 Rechercher un membre..."
+                    >
+
+
+                    <select
+                        id="filterPlan"
+                    >
+
+                        <option value="all">
+                            Tous les abonnements
+                        </option>
+
+                        <option value="Mensuel">
+                            Mensuel
+                        </option>
+
+                        <option value="Trimestriel">
+                            Trimestriel
+                        </option>
+
+                        <option value="Annuel">
+                            Annuel
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- TABLE -->
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Nom
+                                </th>
+
+                                <th>
+                                    Téléphone
+                                </th>
+
+                                <th>
+                                    Abonnement
+                                </th>
+
+                                <th>
+                                    Prix
+                                </th>
+
+                                <th>
+                                    Début
+                                </th>
+
+                                <th>
+                                    Fin
+                                </th>
+
+                                <th>
+                                    Statut
+                                </th>
+
+                                <th>
+                                    Actions
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="membersTable"
+                        ></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 PAYMENTS
+            ========================== -->
+
+            <section
+                class="dashboard-section"
+                id="payments"
+            >
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Gestion des paiements
+                        </h2>
+
+                        <p>
+                            Suivi des paiements des membres
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="primary-btn"
+                        id="addPaymentBtn"
+                    >
+                        + Ajouter paiement
+                    </button>
+
+                </div>
+
+
+                <!-- PAYMENT STATS -->
+
+                <div class="payment-stats">
+
+                    <div>
+
+                        <span>
+                            Nombre de paiements
+                        </span>
+
+                        <strong
+                            id="paymentCount"
+                        >
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>
+                            Total encaissé
+                        </span>
+
+                        <strong
+                            id="paymentTotal"
+                        >
+                            0 DH
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PAYMENTS TABLE -->
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Membre
+                                </th>
+
+                                <th>
+                                    Montant
+                                </th>
+
+                                <th>
+                                    Date
+                                </th>
+
+                                <th>
+                                    Méthode
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody
+                            id="paymentsTable"
+                        ></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- =========================
+                 RECENT PAYMENTS
+            ========================== -->
+
+            <section
+                class="dashboard-section"
+            >
+
+                <div class="section-header">
+
+                    <div>
+
+                        <h2>
+                            Paiements récents
+                        </h2>
+
+                        <p>
+                            Les dernières transactions
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="recentPayments"
+                    class="recent-payments"
+                ></div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================
+         MEMBER MODAL
+    ========================== -->
+
+    <div
+        class="modal"
+        id="memberModal"
+    >
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2 id="memberModalTitle">
+                    Ajouter un membre
+                </h2>
+
+                <button
+                    class="close-btn"
+                    id="closeMemberModal"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="memberForm">
+
+                <input
+                    type="hidden"
+                    id="memberId"
+                >
+
+
+                <div class="form-group">
+
+                    <label>
+                        Nom complet
+                    </label>
+
+                    <input
+                        type="text"
+                        id="memberName"
+                        placeholder="Ex: Ahmed Benali"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Téléphone
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="memberPhone"
+                        placeholder="Ex: 0612345678"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Abonnement
+                    </label>
+
+                    <select
+                        id="memberPlan"
+                        required
+                    >
+
+                        <option value="Mensuel">
+                            Mensuel
+                        </option>
+
+                        <option value="Trimestriel">
+                            Trimestriel
+                        </option>
+
+                        <option value="Annuel">
+                            Annuel
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Prix
+                    </label>
+
+                    <input
+                        type="number"
+                        id="memberPrice"
+                        placeholder="Ex: 200"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Date de début
+                    </label>
+
+                    <input
+                        type="date"
+                        id="memberStartDate"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="cancelMember"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                    >
+                        Enregistrer
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         PAYMENT MODAL
+    ========================== -->
+
+    <div
+        class="modal"
+        id="paymentModal"
+    >
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h2>
+                    Ajouter un paiement
+                </h2>
+
+                <button
+                    class="close-btn"
+                    id="closePaymentModal"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="paymentForm">
+
+                <div class="form-group">
+
+                    <label>
+                        Membre
+                    </label>
+
+                    <select
+                        id="paymentMember"
+                        required
+                    ></select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Montant
+                    </label>
+
+                    <input
+                        type="number"
+                        id="paymentAmount"
+                        placeholder="Ex: 200"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="paymentDate"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Méthode de paiement
+                    </label>
+
+                    <select
+                        id="paymentMethod"
+                        required
+                    >
+
+                        <option value="Cash">
+                            Cash
+                        </option>
+
+                        <option value="Carte">
+                            Carte
+                        </option>
+
+                        <option value="Virement">
+                            Virement
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        class="secondary-btn"
+                        id="cancelPayment"
+                    >
+                        Annuler
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                    >
+                        Enregistrer
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <script src="dashboard.js"></script>
+
+</body>
+
+</html>
