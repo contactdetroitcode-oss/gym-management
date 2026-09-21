@@ -5,6 +5,9 @@ A modern and responsive Gym Management Dashboard built with HTML, CSS and JavaSc
 ## 🌐 Live Demo
 
 https://contactdetroitcode-oss.github.io/gym-management/
+## 📸 Screenshot
+
+![Gym Pro Dashboard](./screenshot.png)
 
 ## ✨ Features
 
