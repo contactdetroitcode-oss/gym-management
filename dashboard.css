@@ -966,3 +966,89 @@ tbody tr:hover {
     }
 
 }
+
+/* =========================
+   THEME TOGGLE
+========================= */
+
+.theme-toggle {
+    width: 42px;
+    height: 42px;
+
+    border: 1px solid #374151;
+    border-radius: 10px;
+
+    background: #1f2937;
+    color: white;
+
+    font-size: 20px;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: 0.3s;
+}
+
+.theme-toggle:hover {
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   LIGHT MODE
+========================= */
+
+body.light-mode {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+body.light-mode .dashboard-main {
+    background: #f3f4f6;
+}
+
+body.light-mode .dashboard-header,
+body.light-mode .stat-card,
+body.light-mode .chart-section,
+body.light-mode .dashboard-section {
+    background: white;
+    color: #111827;
+}
+
+body.light-mode .section-header p,
+body.light-mode .dashboard-header p,
+body.light-mode .stat-card span {
+    color: #6b7280;
+}
+
+body.light-mode .theme-toggle {
+    background: #ffffff;
+    border-color: #d1d5db;
+    color: #111827;
+}
+
+body.light-mode .table-container {
+    background: white;
+}
+
+body.light-mode table {
+    color: #111827;
+}
+
+body.light-mode th {
+    background: #f9fafb;
+}
+
+body.light-mode td {
+    border-color: #e5e7eb;
+}
+
+body.light-mode .filters input,
+body.light-mode .filters select {
+    background: white;
+    color: #111827;
+    border-color: #d1d5db;
+}

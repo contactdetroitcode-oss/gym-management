@@ -2085,3 +2085,36 @@ updateAnalytics();
 loadPaymentMembers();
 
 updateRevenueChart();
+
+// =========================
+// DARK / LIGHT MODE
+// =========================
+
+const themeToggle = document.getElementById("themeToggle");
+
+const savedTheme = localStorage.getItem("gymTheme");
+
+if (savedTheme === "light") {
+    document.body.classList.add("light-mode");
+    themeToggle.textContent = "☀️";
+}
+
+themeToggle.addEventListener("click", function () {
+
+    document.body.classList.toggle("light-mode");
+
+    if (document.body.classList.contains("light-mode")) {
+
+        themeToggle.textContent = "☀️";
+
+        localStorage.setItem("gymTheme", "light");
+
+    } else {
+
+        themeToggle.textContent = "🌙";
+
+        localStorage.setItem("gymTheme", "dark");
+
+    }
+
+});
