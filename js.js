@@ -1,24 +1,58 @@
 const loginForm = document.getElementById("loginForm");
 
-loginForm.addEventListener("submit", function(event) {
+const emailInput = document.getElementById("email");
+
+const passwordInput = document.getElementById("password");
+
+const loginError = document.getElementById("loginError");
+
+
+/* =========================
+   ADMIN LOGIN
+========================= */
+
+const ADMIN_EMAIL = "admin@gympro.com";
+
+const ADMIN_PASSWORD = "admin123";
+
+
+/* =========================
+   LOGIN
+========================= */
+
+loginForm.addEventListener("submit", function (event) {
 
     event.preventDefault();
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    const email = emailInput.value.trim();
 
-    console.log("Email:", email);
-    console.log("Password:", password);
+    const password = passwordInput.value.trim();
 
-    if (email === "admin@gympro.com" && password === "1234") {
+    loginError.textContent = "";
 
-        localStorage.setItem("isLoggedIn", "true");
 
-        window.location.href = "./dashboard.html";
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+
+        localStorage.setItem(
+            "isLoggedIn",
+            "true"
+        );
+
+        localStorage.setItem(
+            "adminEmail",
+            email
+        );
+
+        window.location.href = "dashboard.html";
 
     } else {
 
-        alert("Email ou mot de passe incorrect !");
+        loginError.textContent =
+            "Email ou mot de passe incorrect.";
+
+        passwordInput.value = "";
+
+        passwordInput.focus();
 
     }
 

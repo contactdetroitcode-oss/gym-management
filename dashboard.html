@@ -1,292 +1,302 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="description" content="Gym Pro - Système professionnel de gestion de salle de sport">
+    <meta name="author" content="Gym Pro">
 
-    <title>Gym Pro - Dashboard</title>
+    <title>Gym Pro | Dashboard</title>
 
-    <link
-        rel="stylesheet"
-        href="dashboard.css"
-    >
-
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 
 <body>
 
-    <div class="dashboard-layout">
+    <!-- ================= SIDEBAR ================= -->
+    <aside class="sidebar" id="sidebar">
 
-        <!-- =========================
-             SIDEBAR
-        ========================== -->
+        <div class="sidebar-header">
 
-        <aside class="sidebar">
+            <div class="logo">
+                <span class="logo-icon">G</span>
 
-            <div class="sidebar-logo">
+                <div class="logo-text">
+                    <strong>GYM PRO</strong>
+                    <small>Management System</small>
+                </div>
+            </div>
 
-                <h2>GYM PRO</h2>
+        </div>
 
-                <span>
-                    Management System
-                </span>
+
+        <nav class="sidebar-nav">
+
+            <a href="#dashboard" class="nav-link active">
+                <span class="nav-icon">⌂</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="#members" class="nav-link">
+                <span class="nav-icon">👥</span>
+                <span>Membres</span>
+            </a>
+
+            <a href="#payments" class="nav-link">
+                <span class="nav-icon">💳</span>
+                <span>Paiements</span>
+            </a>
+
+            <a href="#analytics" class="nav-link">
+                <span class="nav-icon">📊</span>
+                <span>Statistiques</span>
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <button id="logoutBtn" class="logout-btn">
+                <span>↪</span>
+                <span>Déconnexion</span>
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+    <main class="dashboard-main">
+
+        <!-- ================= HEADER ================= -->
+        <header class="dashboard-header">
+
+            <div class="header-left">
+
+                <button
+                    type="button"
+                    class="mobile-menu-btn"
+                    id="mobileMenuBtn"
+                    aria-label="Ouvrir le menu"
+                >
+                    ☰
+                </button>
+
+                <div>
+                    <h1>Dashboard</h1>
+
+                    <p>
+                        Bienvenue dans votre espace de gestion
+                    </p>
+                </div>
 
             </div>
 
 
-            <nav class="sidebar-menu">
+            <div class="header-right">
 
-                <a
-                    href="#dashboard"
-                    class="menu-item active"
+                <button
+                    type="button"
+                    id="themeToggle"
+                    class="theme-toggle"
+                    title="Changer le thème"
                 >
-                    <span class="menu-icon">🏠</span>
-                    <span>Dashboard</span>
-                </a>
+                    ◐
+                </button>
 
 
-                <a
-                    href="#members"
-                    class="menu-item"
-                >
-                    <span class="menu-icon">👥</span>
-                    <span>Members</span>
-                </a>
+                <div class="admin-profile">
+
+                    <div class="admin-avatar">
+                        A
+                    </div>
+
+                    <div class="admin-info">
+                        <strong>Administrateur</strong>
+                        <span>Admin</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
 
 
-                <a
-                    href="#payments"
-                    class="menu-item"
-                >
-                    <span class="menu-icon">💳</span>
-                    <span>Payments</span>
-                </a>
+        <!-- ================= CONTENT ================= -->
+        <div class="dashboard-content" id="dashboard">
 
 
-                <a
-                    href="#analytics"
-                    class="menu-item"
-                >
-                    <span class="menu-icon">📊</span>
-                    <span>Analytics</span>
-                </a>
-
-            </nav>
-
-
-            <button
-                id="logoutBtn"
-                class="logout-btn"
-            >
-                <span>🚪</span>
-                <span>Logout</span>
-            </button>
-
-        </aside>
-
-
-        <!-- =========================
-             MAIN
-        ========================== -->
-
-        <main class="dashboard-main">
-
-            <!-- HEADER -->
-
-            <header
-                class="dashboard-header"
-                id="dashboard"
+            <!-- ================= EXPIRATION ALERT ================= -->
+            <div
+                class="expiration-alert"
+                id="expirationAlert"
+                style="display: none;"
             >
 
-                <div>
+                <div class="alert-icon">
+                    ⚠
+                </div>
 
-                    <h1>
-                        Dashboard
-                    </h1>
+                <div class="alert-content">
 
-                    <p>
-                        Bienvenue dans votre espace Gym Pro
+                    <strong>
+                        Attention
+                    </strong>
+
+                    <p id="expirationAlertText">
+                        Certains abonnements arrivent à expiration.
                     </p>
 
                 </div>
 
-
-                <!-- THEME TOGGLE -->
-
-                <button
-                    id="themeToggle"
-                    class="theme-toggle"
-                    title="Changer le thème"
-                    type="button"
-                >
-                    🌙
-                </button>
+            </div>
 
 
-                <div class="header-user">
-
-                    <div class="user-avatar">
-                        A
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            Admin
-                        </strong>
-
-                        <small>
-                            Administrateur
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </header>
+            <!-- ================= STATISTICS ================= -->
+            <section class="stats-grid">
 
 
-            <!-- =========================
-                 STATISTICS
-            ========================== -->
-
-            <section
-                class="stats-grid"
-                id="analytics"
-            >
-
+                <!-- Total Members -->
                 <div class="stat-card">
 
-                    <div class="stat-icon">
+                    <div class="stat-icon members-icon">
                         👥
                     </div>
 
-                    <div>
+                    <div class="stat-info">
 
                         <span>
-                            Total Members
+                            Total Membres
                         </span>
 
-                        <h2 id="totalMembers">
+                        <strong id="totalMembers">
                             0
-                        </h2>
+                        </strong>
 
                     </div>
 
                 </div>
 
 
+                <!-- Active Members -->
                 <div class="stat-card">
 
-                    <div class="stat-icon">
-                        🟢
+                    <div class="stat-icon active-icon">
+                        ✓
                     </div>
 
-                    <div>
+                    <div class="stat-info">
 
                         <span>
-                            Active Members
+                            Membres Actifs
                         </span>
 
-                        <h2 id="activeMembers">
+                        <strong id="activeMembers">
                             0
-                        </h2>
+                        </strong>
 
                     </div>
 
                 </div>
 
 
+                <!-- Payments -->
                 <div class="stat-card">
 
-                    <div class="stat-icon">
+                    <div class="stat-icon payment-icon">
+                        💳
+                    </div>
+
+                    <div class="stat-info">
+
+                        <span>
+                            Paiements
+                        </span>
+
+                        <strong id="totalPayments">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Revenue -->
+                <div class="stat-card">
+
+                    <div class="stat-icon revenue-icon">
                         💰
                     </div>
 
-                    <div>
+                    <div class="stat-info">
 
                         <span>
-                            Total Payments
+                            Revenus
                         </span>
 
-                        <h2 id="totalPayments">
+                        <strong id="monthlyRevenue">
                             0 DH
-                        </h2>
+                        </strong>
 
                     </div>
 
                 </div>
 
 
+                <!-- Expired -->
                 <div class="stat-card">
 
-                    <div class="stat-icon">
-                        📅
+                    <div class="stat-icon expired-icon">
+                        !
                     </div>
 
-                    <div>
+                    <div class="stat-info">
 
                         <span>
-                            Revenue ce mois
+                            Expirés
                         </span>
 
-                        <h2 id="monthlyRevenue">
-                            0 DH
-                        </h2>
-
-                    </div>
-
-                </div>
-
-
-                <div class="stat-card expired-card">
-
-                    <div class="stat-icon">
-                        🔴
-                    </div>
-
-                    <div>
-
-                        <span>
-                            Expired Members
-                        </span>
-
-                        <h2 id="expiredMembers">
+                        <strong id="expiredMembers">
                             0
-                        </h2>
+                        </strong>
 
                     </div>
 
                 </div>
+
 
             </section>
 
 
-            <!-- =========================
-                 REVENUE CHART
-            ========================== -->
-
+            <!-- ================= ANALYTICS ================= -->
             <section
-                class="chart-section"
+                class="dashboard-section"
+                id="analytics"
             >
 
                 <div class="section-header">
 
                     <div>
-
                         <h2>
-                            Revenue par mois
+                            Évolution des revenus
                         </h2>
 
                         <p>
-                            Évolution des paiements
+                            Suivi des paiements mensuels
                         </p>
+                    </div>
+
+
+                    <div class="chart-controls">
+
+                        <select id="chartYear">
+                            <!-- JS -->
+                        </select>
 
                     </div>
 
@@ -295,19 +305,29 @@
 
                 <div class="chart-container">
 
-                    <canvas
-                        id="revenueChart"
-                    ></canvas>
+                    <canvas id="revenueChart"></canvas>
+
+                    <div
+                        class="chart-empty"
+                        id="chartEmpty"
+                        style="display: none;"
+                    >
+                        <div>
+                            📊
+                        </div>
+
+                        <p>
+                            Aucun paiement enregistré
+                        </p>
+
+                    </div>
 
                 </div>
 
             </section>
 
 
-            <!-- =========================
-                 MEMBERS
-            ========================== -->
-
+            <!-- ================= MEMBERS ================= -->
             <section
                 class="dashboard-section"
                 id="members"
@@ -316,42 +336,47 @@
                 <div class="section-header">
 
                     <div>
-
                         <h2>
                             Gestion des membres
                         </h2>
 
                         <p>
-                            Ajouter et gérer les membres
+                            Gérez les abonnements de vos membres
                         </p>
-
                     </div>
 
 
                     <button
-                        class="primary-btn"
+                        type="button"
                         id="addMemberBtn"
+                        class="primary-btn"
                     >
-                        + Ajouter membre
+                        <span>+</span>
+                        Ajouter un membre
                     </button>
 
                 </div>
 
 
-                <!-- FILTERS -->
-
+                <!-- Filters -->
                 <div class="filters">
 
-                    <input
-                        type="text"
-                        id="searchMember"
-                        placeholder="🔍 Rechercher un membre..."
-                    >
+                    <div class="search-box">
+
+                        <span>
+                            🔍
+                        </span>
+
+                        <input
+                            type="text"
+                            id="searchMember"
+                            placeholder="Rechercher un membre..."
+                        >
+
+                    </div>
 
 
-                    <select
-                        id="filterPlan"
-                    >
+                    <select id="filterPlan">
 
                         <option value="all">
                             Tous les abonnements
@@ -374,11 +399,10 @@
                 </div>
 
 
-                <!-- TABLE -->
+                <!-- Members Table -->
+                <div class="table-wrapper">
 
-                <div class="table-container">
-
-                    <table>
+                    <table class="data-table">
 
                         <thead>
 
@@ -421,9 +445,9 @@
                         </thead>
 
 
-                        <tbody
-                            id="membersTable"
-                        ></tbody>
+                        <tbody id="membersTable">
+                            <!-- JavaScript -->
+                        </tbody>
 
                     </table>
 
@@ -432,10 +456,7 @@
             </section>
 
 
-            <!-- =========================
-                 PAYMENTS
-            ========================== -->
-
+            <!-- ================= PAYMENTS ================= -->
             <section
                 class="dashboard-section"
                 id="payments"
@@ -450,63 +471,55 @@
                         </h2>
 
                         <p>
-                            Suivi des paiements des membres
+                            Historique des paiements des membres
                         </p>
 
                     </div>
 
 
                     <button
-                        class="primary-btn"
+                        type="button"
                         id="addPaymentBtn"
+                        class="primary-btn"
                     >
-                        + Ajouter paiement
+                        <span>+</span>
+                        Ajouter un paiement
                     </button>
 
                 </div>
 
 
-                <!-- PAYMENT STATS -->
-
-                <div class="payment-stats">
+                <!-- Payment Summary -->
+                <div class="payment-summary">
 
                     <div>
-
                         <span>
                             Nombre de paiements
                         </span>
 
-                        <strong
-                            id="paymentCount"
-                        >
+                        <strong id="paymentCount">
                             0
                         </strong>
-
                     </div>
 
 
                     <div>
-
                         <span>
-                            Total encaissé
+                            Total
                         </span>
 
-                        <strong
-                            id="paymentTotal"
-                        >
+                        <strong id="paymentTotal">
                             0 DH
                         </strong>
-
                     </div>
 
                 </div>
 
 
-                <!-- PAYMENTS TABLE -->
+                <!-- Payments Table -->
+                <div class="table-wrapper">
 
-                <div class="table-container">
-
-                    <table>
+                    <table class="data-table">
 
                         <thead>
 
@@ -529,7 +542,7 @@
                                 </th>
 
                                 <th>
-                                    Action
+                                    Actions
                                 </th>
 
                             </tr>
@@ -537,9 +550,9 @@
                         </thead>
 
 
-                        <tbody
-                            id="paymentsTable"
-                        ></tbody>
+                        <tbody id="paymentsTable">
+                            <!-- JavaScript -->
+                        </tbody>
 
                     </table>
 
@@ -548,24 +561,19 @@
             </section>
 
 
-            <!-- =========================
-                 RECENT PAYMENTS
-            ========================== -->
-
-            <section
-                class="dashboard-section"
-            >
+            <!-- ================= RECENT PAYMENTS ================= -->
+            <section class="dashboard-section">
 
                 <div class="section-header">
 
                     <div>
 
                         <h2>
-                            Paiements récents
+                            Derniers paiements
                         </h2>
 
                         <p>
-                            Les dernières transactions
+                            Activité récente
                         </p>
 
                     </div>
@@ -574,39 +582,51 @@
 
 
                 <div
-                    id="recentPayments"
                     class="recent-payments"
-                ></div>
+                    id="recentPayments"
+                >
+                    <!-- JavaScript -->
+                </div>
 
             </section>
 
 
-        </main>
+        </div>
 
-    </div>
+    </main>
 
 
-    <!-- =========================
-         MEMBER MODAL
-    ========================== -->
+
+    <!-- ================================================= -->
+    <!-- MEMBER MODAL -->
+    <!-- ================================================= -->
 
     <div
-        class="modal"
+        class="modal-overlay"
         id="memberModal"
     >
 
-        <div class="modal-content">
+        <div class="modal">
 
             <div class="modal-header">
 
-                <h2 id="memberModalTitle">
-                    Ajouter un membre
-                </h2>
+                <div>
+
+                    <h2 id="memberModalTitle">
+                        Ajouter un membre
+                    </h2>
+
+                    <p>
+                        Informations du membre
+                    </p>
+
+                </div>
+
 
                 <button
+                    type="button"
                     class="close-btn"
                     id="closeMemberModal"
-                    type="button"
                 >
                     ×
                 </button>
@@ -622,93 +642,103 @@
                 >
 
 
-                <div class="form-group">
+                <div class="form-grid">
 
-                    <label>
-                        Nom complet
-                    </label>
+                    <div class="form-group">
 
-                    <input
-                        type="text"
-                        id="memberName"
-                        placeholder="Ex: Ahmed Benali"
-                        required
-                    >
+                        <label for="memberName">
+                            Nom complet
+                        </label>
 
-                </div>
+                        <input
+                            type="text"
+                            id="memberName"
+                            placeholder="Ex: Ahmed Benali"
+                            required
+                        >
 
-
-                <div class="form-group">
-
-                    <label>
-                        Téléphone
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="memberPhone"
-                        placeholder="Ex: 0612345678"
-                        required
-                    >
-
-                </div>
+                    </div>
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label>
-                        Abonnement
-                    </label>
+                        <label for="memberPhone">
+                            Téléphone
+                        </label>
 
-                    <select
-                        id="memberPlan"
-                        required
-                    >
+                        <input
+                            type="tel"
+                            id="memberPhone"
+                            placeholder="Ex: 06 00 00 00 00"
+                            required
+                        >
 
-                        <option value="Mensuel">
-                            Mensuel
-                        </option>
-
-                        <option value="Trimestriel">
-                            Trimestriel
-                        </option>
-
-                        <option value="Annuel">
-                            Annuel
-                        </option>
-
-                    </select>
-
-                </div>
+                    </div>
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label>
-                        Prix
-                    </label>
+                        <label for="memberPlan">
+                            Abonnement
+                        </label>
 
-                    <input
-                        type="number"
-                        id="memberPrice"
-                        placeholder="Ex: 200"
-                        required
-                    >
+                        <select
+                            id="memberPlan"
+                            required
+                        >
 
-                </div>
+                            <option value="">
+                                Sélectionner
+                            </option>
+
+                            <option value="Mensuel">
+                                Mensuel
+                            </option>
+
+                            <option value="Trimestriel">
+                                Trimestriel
+                            </option>
+
+                            <option value="Annuel">
+                                Annuel
+                            </option>
+
+                        </select>
+
+                    </div>
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label>
-                        Date de début
-                    </label>
+                        <label for="memberPrice">
+                            Prix (DH)
+                        </label>
 
-                    <input
-                        type="date"
-                        id="memberStartDate"
-                        required
-                    >
+                        <input
+                            type="number"
+                            id="memberPrice"
+                            min="0"
+                            step="0.01"
+                            placeholder="Ex: 150"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="memberStartDate">
+                            Date de début
+                        </label>
+
+                        <input
+                            type="date"
+                            id="memberStartDate"
+                            required
+                        >
+
+                    </div>
 
                 </div>
 
@@ -717,8 +747,8 @@
 
                     <button
                         type="button"
-                        class="secondary-btn"
                         id="cancelMember"
+                        class="secondary-btn"
                     >
                         Annuler
                     </button>
@@ -739,27 +769,37 @@
     </div>
 
 
-    <!-- =========================
-         PAYMENT MODAL
-    ========================== -->
+
+    <!-- ================================================= -->
+    <!-- PAYMENT MODAL -->
+    <!-- ================================================= -->
 
     <div
-        class="modal"
+        class="modal-overlay"
         id="paymentModal"
     >
 
-        <div class="modal-content">
+        <div class="modal">
 
             <div class="modal-header">
 
-                <h2>
-                    Ajouter un paiement
-                </h2>
+                <div>
+
+                    <h2>
+                        Ajouter un paiement
+                    </h2>
+
+                    <p>
+                        Enregistrer une nouvelle transaction
+                    </p>
+
+                </div>
+
 
                 <button
+                    type="button"
                     class="close-btn"
                     id="closePaymentModal"
-                    type="button"
                 >
                     ×
                 </button>
@@ -769,75 +809,92 @@
 
             <form id="paymentForm">
 
-                <div class="form-group">
-
-                    <label>
-                        Membre
-                    </label>
-
-                    <select
-                        id="paymentMember"
-                        required
-                    ></select>
-
-                </div>
+                <div class="form-grid">
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label>
-                        Montant
-                    </label>
+                        <label for="paymentMember">
+                            Membre
+                        </label>
 
-                    <input
-                        type="number"
-                        id="paymentAmount"
-                        placeholder="Ex: 200"
-                        required
-                    >
+                        <select
+                            id="paymentMember"
+                            required
+                        >
 
-                </div>
+                            <option value="">
+                                Sélectionner un membre
+                            </option>
 
+                        </select>
 
-                <div class="form-group">
-
-                    <label>
-                        Date
-                    </label>
-
-                    <input
-                        type="date"
-                        id="paymentDate"
-                        required
-                    >
-
-                </div>
+                    </div>
 
 
-                <div class="form-group">
+                    <div class="form-group">
 
-                    <label>
-                        Méthode de paiement
-                    </label>
+                        <label for="paymentAmount">
+                            Montant (DH)
+                        </label>
 
-                    <select
-                        id="paymentMethod"
-                        required
-                    >
+                        <input
+                            type="number"
+                            id="paymentAmount"
+                            min="0"
+                            step="0.01"
+                            placeholder="Ex: 150"
+                            required
+                        >
 
-                        <option value="Cash">
-                            Cash
-                        </option>
+                    </div>
 
-                        <option value="Carte">
-                            Carte
-                        </option>
 
-                        <option value="Virement">
-                            Virement
-                        </option>
+                    <div class="form-group">
 
-                    </select>
+                        <label for="paymentDate">
+                            Date
+                        </label>
+
+                        <input
+                            type="date"
+                            id="paymentDate"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="paymentMethod">
+                            Méthode de paiement
+                        </label>
+
+                        <select
+                            id="paymentMethod"
+                            required
+                        >
+
+                            <option value="">
+                                Sélectionner
+                            </option>
+
+                            <option value="Espèces">
+                                Espèces
+                            </option>
+
+                            <option value="Carte">
+                                Carte bancaire
+                            </option>
+
+                            <option value="Virement">
+                                Virement
+                            </option>
+
+                        </select>
+
+                    </div>
 
                 </div>
 
@@ -846,8 +903,8 @@
 
                     <button
                         type="button"
-                        class="secondary-btn"
                         id="cancelPayment"
+                        class="secondary-btn"
                     >
                         Annuler
                     </button>
@@ -868,8 +925,208 @@
     </div>
 
 
+
+    <!-- ================================================= -->
+    <!-- PROFILE MODAL -->
+    <!-- ================================================= -->
+
+    <div
+        class="modal-overlay"
+        id="profileModal"
+    >
+
+        <div class="modal profile-modal">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h2>
+                        Profil du membre
+                    </h2>
+
+                    <p id="profileSubtitle">
+                        Informations détaillées
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="close-btn"
+                    id="closeProfileModal"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="profile-header">
+
+                <div
+                    class="profile-avatar"
+                    id="profileAvatar"
+                >
+                    M
+                </div>
+
+
+                <div>
+
+                    <h3 id="profileName">
+                        -
+                    </h3>
+
+                    <p id="profilePhone">
+                        -
+                    </p>
+
+                    <span
+                        id="profileStatus"
+                        class="status-badge"
+                    >
+                        -
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-grid">
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Abonnement
+                    </span>
+
+                    <strong id="profilePlan">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Prix
+                    </span>
+
+                    <strong id="profilePrice">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Date début
+                    </span>
+
+                    <strong id="profileStartDate">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Date fin
+                    </span>
+
+                    <strong id="profileEndDate">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        Total payé
+                    </span>
+
+                    <strong id="profilePaymentTotal">
+                        -
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="profile-payments-section">
+
+                <h3>
+                    Historique des paiements
+                </h3>
+
+                <div id="profilePayments">
+                    <!-- JavaScript -->
+                </div>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    id="profileCloseBtn"
+                    class="secondary-btn"
+                >
+                    Fermer
+                </button>
+
+                <button
+                    type="button"
+                    id="profilePaymentBtn"
+                    class="secondary-btn"
+                >
+                    + Paiement
+                </button>
+
+                <button
+                    type="button"
+                    id="profileRenewBtn"
+                    class="primary-btn"
+                >
+                    Renouveler
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= TOAST ================= -->
+
+    <div
+        class="toast"
+        id="toast"
+    >
+        <span id="toastMessage">
+            Opération réussie
+        </span>
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
     <script src="dashboard.js"></script>
 
 </body>
-
 </html>

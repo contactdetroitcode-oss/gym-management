@@ -1,141 +1,356 @@
-/* =========================
-   LOGIN PROTECTION
-========================= */
+/* ==================================================
+   GYM PRO - DASHBOARD.JS
+   HTML + CSS + JavaScript + LocalStorage
+================================================== */
 
-const isLoggedIn =
-    localStorage.getItem("isLoggedIn");
+
+/* ==================================================
+   LOGIN PROTECTION
+================================================== */
+
+const isLoggedIn = localStorage.getItem("isLoggedIn");
 
 if (isLoggedIn !== "true") {
-
-    window.location.href =
-        "./index.html";
+    window.location.href = "index.html";
 }
 
 
-/* =========================
+/* ==================================================
+   DATA
+================================================== */
+
+let members = JSON.parse(
+    localStorage.getItem("members") || "[]"
+);
+
+let payments = JSON.parse(
+    localStorage.getItem("payments") || "[]"
+);
+
+if (!Array.isArray(members)) {
+    members = [];
+}
+
+if (!Array.isArray(payments)) {
+    payments = [];
+}
+
+
+/* ==================================================
+   ELEMENTS
+================================================== */
+
+const totalMembers =
+    document.getElementById("totalMembers");
+
+const activeMembers =
+    document.getElementById("activeMembers");
+
+const expiredMembers =
+    document.getElementById("expiredMembers");
+
+const totalPayments =
+    document.getElementById("totalPayments");
+
+const monthlyRevenue =
+    document.getElementById("monthlyRevenue");
+
+const membersTable =
+    document.getElementById("membersTable");
+
+const paymentsTable =
+    document.getElementById("paymentsTable");
+
+const recentPayments =
+    document.getElementById("recentPayments");
+
+const memberModal =
+    document.getElementById("memberModal");
+
+const paymentModal =
+    document.getElementById("paymentModal");
+
+const profileModal =
+    document.getElementById("profileModal");
+
+const memberForm =
+    document.getElementById("memberForm");
+
+const paymentForm =
+    document.getElementById("paymentForm");
+
+const canvas =
+    document.getElementById("revenueChart");
+
+const ctx =
+    canvas ? canvas.getContext("2d") : null;
+
+const chartYear =
+    document.getElementById("chartYear");
+
+
+/* ==================================================
+   SAVE DATA
+================================================== */
+
+function saveMembers() {
+
+    localStorage.setItem(
+        "members",
+        JSON.stringify(members)
+    );
+
+}
+
+
+function savePayments() {
+
+    localStorage.setItem(
+        "payments",
+        JSON.stringify(payments)
+    );
+
+}
+
+
+/* ==================================================
+   MONEY
+================================================== */
+
+function formatMoney(value) {
+
+    return Number(value || 0).toLocaleString(
+        "fr-FR"
+    ) + " DH";
+
+}
+
+
+/* ==================================================
+   DATE
+================================================== */
+
+function formatDate(date) {
+
+    if (!date) {
+        return "-";
+    }
+
+    const d = new Date(
+        date + "T00:00:00"
+    );
+
+    if (isNaN(d.getTime())) {
+        return "-";
+    }
+
+    return d.toLocaleDateString("fr-FR");
+
+}
+
+
+function getTodayString() {
+
+    const date = new Date();
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(date.getMonth() + 1)
+            .padStart(2, "0");
+
+    const day =
+        String(date.getDate())
+            .padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/* ==================================================
+   ESCAPE HTML
+================================================== */
+
+function escapeHTML(text) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        String(text ?? "");
+
+    return div.innerHTML;
+
+}
+
+
+/* ==================================================
+   TOAST
+================================================== */
+
+function showToast(message) {
+
+    const toast =
+        document.getElementById("toast");
+
+    const toastMessage =
+        document.getElementById("toastMessage");
+
+    if (!toast) return;
+
+    if (toastMessage) {
+        toastMessage.textContent = message;
+    } else {
+        toast.textContent = message;
+    }
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 2500);
+
+}
+
+
+/* ==================================================
    LOGOUT
-========================= */
+================================================== */
 
 const logoutBtn =
     document.getElementById("logoutBtn");
 
-logoutBtn.addEventListener(
-    "click",
-    function () {
+if (logoutBtn) {
 
-        localStorage.removeItem(
-            "isLoggedIn"
-        );
+    logoutBtn.addEventListener(
+        "click",
+        function () {
 
-        window.location.href =
-            "./index.html";
+            localStorage.removeItem(
+                "isLoggedIn"
+            );
 
-    }
-);
+            window.location.href =
+                "index.html";
 
-
-/* =========================
-   SIDEBAR NAVIGATION
-========================= */
-
-const menuItems =
-    document.querySelectorAll(
-        ".menu-item"
+        }
     );
 
+}
 
-menuItems.forEach(
-    function (item) {
 
-        item.addEventListener(
+/* ==================================================
+   MOBILE MENU
+================================================== */
+
+const mobileMenuBtn =
+    document.getElementById("mobileMenuBtn");
+
+const sidebar =
+    document.getElementById("sidebar");
+
+if (mobileMenuBtn && sidebar) {
+
+    mobileMenuBtn.addEventListener(
+        "click",
+        function () {
+
+            sidebar.classList.toggle("open");
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   NAVIGATION
+================================================== */
+
+document
+    .querySelectorAll(".nav-link")
+    .forEach(link => {
+
+        link.addEventListener(
             "click",
             function () {
 
-                menuItems.forEach(
-                    function (menu) {
+                document
+                    .querySelectorAll(".nav-link")
+                    .forEach(item => {
 
-                        menu.classList.remove(
+                        item.classList.remove(
                             "active"
                         );
 
-                    }
-                );
+                    });
 
-                item.classList.add(
-                    "active"
-                );
+                this.classList.add("active");
+
+                if (sidebar) {
+                    sidebar.classList.remove("open");
+                }
 
             }
         );
 
+    });
+
+
+/* ==================================================
+   MEMBER MODAL
+================================================== */
+
+function openMemberModal(member = null) {
+
+    if (!memberModal || !memberForm) {
+        return;
     }
-);
 
+    memberModal.classList.add("show");
 
-/* =========================
-   MEMBERS
-========================= */
+    if (member) {
 
-let members =
-    JSON.parse(
-        localStorage.getItem(
-            "members"
-        )
-    ) || [];
+        document.getElementById(
+            "memberModalTitle"
+        ).textContent =
+            "Modifier le membre";
 
+        document.getElementById(
+            "memberId"
+        ).value =
+            member.id;
 
-/* =========================
-   MEMBER ELEMENTS
-========================= */
+        document.getElementById(
+            "memberName"
+        ).value =
+            member.name || "";
 
-const memberModal =
-    document.getElementById(
-        "memberModal"
-    );
+        document.getElementById(
+            "memberPhone"
+        ).value =
+            member.phone || "";
 
-const memberForm =
-    document.getElementById(
-        "memberForm"
-    );
+        document.getElementById(
+            "memberPlan"
+        ).value =
+            member.plan || "";
 
-const addMemberBtn =
-    document.getElementById(
-        "addMemberBtn"
-    );
+        document.getElementById(
+            "memberPrice"
+        ).value =
+            member.price || "";
 
-const closeMemberModal =
-    document.getElementById(
-        "closeMemberModal"
-    );
+        document.getElementById(
+            "memberStartDate"
+        ).value =
+            member.startDate || getTodayString();
 
-const cancelMember =
-    document.getElementById(
-        "cancelMember"
-    );
-
-const membersTable =
-    document.getElementById(
-        "membersTable"
-    );
-
-const searchMember =
-    document.getElementById(
-        "searchMember"
-    );
-
-const filterPlan =
-    document.getElementById(
-        "filterPlan"
-    );
-
-
-/* =========================
-   OPEN MEMBER MODAL
-========================= */
-
-addMemberBtn.addEventListener(
-    "click",
-    function () {
+    } else {
 
         memberForm.reset();
 
@@ -148,193 +363,85 @@ addMemberBtn.addEventListener(
         ).textContent =
             "Ajouter un membre";
 
-        memberModal.classList.add(
-            "active"
-        );
+        document.getElementById(
+            "memberStartDate"
+        ).value =
+            getTodayString();
 
     }
-);
+
+}
 
 
-/* =========================
-   CLOSE MEMBER MODAL
-========================= */
+function closeMemberModal() {
 
-function closeMemberModalFunction() {
+    if (!memberModal) return;
 
-    memberModal.classList.remove(
-        "active"
+    memberModal.classList.remove("show");
+
+}
+
+
+const addMemberBtn =
+    document.getElementById("addMemberBtn");
+
+if (addMemberBtn) {
+
+    addMemberBtn.addEventListener(
+        "click",
+        () => openMemberModal()
     );
 
 }
 
 
-closeMemberModal.addEventListener(
-    "click",
-    closeMemberModalFunction
-);
+const closeMemberModalBtn =
+    document.getElementById("closeMemberModal");
+
+if (closeMemberModalBtn) {
+
+    closeMemberModalBtn.addEventListener(
+        "click",
+        closeMemberModal
+    );
+
+}
 
 
-cancelMember.addEventListener(
-    "click",
-    closeMemberModalFunction
-);
+const cancelMember =
+    document.getElementById("cancelMember");
+
+if (cancelMember) {
+
+    cancelMember.addEventListener(
+        "click",
+        closeMemberModal
+    );
+
+}
 
 
-/* =========================
-   ADD / EDIT MEMBER
-========================= */
-
-memberForm.addEventListener(
-    "submit",
-    function (event) {
-
-        event.preventDefault();
-
-
-        const id =
-            document.getElementById(
-                "memberId"
-            ).value;
-
-
-        const name =
-            document.getElementById(
-                "memberName"
-            ).value.trim();
-
-
-        const phone =
-            document.getElementById(
-                "memberPhone"
-            ).value.trim();
-
-
-        const plan =
-            document.getElementById(
-                "memberPlan"
-            ).value;
-
-
-        const price =
-            Number(
-                document.getElementById(
-                    "memberPrice"
-                ).value
-            );
-
-
-        const startDate =
-            document.getElementById(
-                "memberStartDate"
-            ).value;
-
-
-        const endDate =
-            calculateEndDate(
-                startDate,
-                plan
-            );
-
-
-        if (id) {
-
-            const member =
-                members.find(
-                    function (member) {
-
-                        return member.id ==
-                            id;
-
-                    }
-                );
-
-
-            if (member) {
-
-                member.name =
-                    name;
-
-                member.phone =
-                    phone;
-
-                member.plan =
-                    plan;
-
-                member.price =
-                    price;
-
-                member.startDate =
-                    startDate;
-
-                member.endDate =
-                    endDate;
-
-            }
-
-        } else {
-
-            const newMember = {
-
-                id:
-                    Date.now(),
-
-                name:
-                    name,
-
-                phone:
-                    phone,
-
-                plan:
-                    plan,
-
-                price:
-                    price,
-
-                startDate:
-                    startDate,
-
-                endDate:
-                    endDate
-
-            };
-
-
-            members.push(
-                newMember
-            );
-
-        }
-
-
-        saveMembers();
-
-        displayMembers();
-
-        updateAnalytics();
-
-        loadPaymentMembers();
-
-        closeMemberModalFunction();
-
-    }
-);
-
-
-/* =========================
-   CALCULATE END DATE
-========================= */
+/* ==================================================
+   CALCUL END DATE
+================================================== */
 
 function calculateEndDate(
     startDate,
     plan
 ) {
 
+    if (!startDate) {
+        return "";
+    }
+
     const date =
         new Date(
-            startDate
+            startDate + "T00:00:00"
         );
 
+    if (isNaN(date.getTime())) {
+        return "";
+    }
 
     if (plan === "Mensuel") {
 
@@ -344,7 +451,6 @@ function calculateEndDate(
 
     }
 
-
     if (plan === "Trimestriel") {
 
         date.setMonth(
@@ -352,7 +458,6 @@ function calculateEndDate(
         );
 
     }
-
 
     if (plan === "Annuel") {
 
@@ -362,232 +467,204 @@ function calculateEndDate(
 
     }
 
-
-    return formatDate(
-        date
-    );
-
-}
-
-
-/* =========================
-   FORMAT DATE
-========================= */
-
-function formatDate(date) {
-
     const year =
         date.getFullYear();
 
-
     const month =
-        String(
-            date.getMonth() + 1
-        ).padStart(
-            2,
-            "0"
-        );
-
+        String(date.getMonth() + 1)
+            .padStart(2, "0");
 
     const day =
-        String(
-            date.getDate()
-        ).padStart(
-            2,
-            "0"
-        );
+        String(date.getDate())
+            .padStart(2, "0");
 
-
-    return (
-        year +
-        "-" +
-        month +
-        "-" +
-        day
-    );
+    return `${year}-${month}-${day}`;
 
 }
 
 
-/* =========================
-   SAVE MEMBERS
-========================= */
+/* ==================================================
+   MEMBER FORM
+================================================== */
 
-function saveMembers() {
+if (memberForm) {
 
-    localStorage.setItem(
-        "members",
-        JSON.stringify(
-            members
-        )
-    );
+    memberForm.addEventListener(
+        "submit",
+        function (event) {
 
-}
+            event.preventDefault();
 
+            const id =
+                document.getElementById(
+                    "memberId"
+                ).value;
 
-/* =========================
-   MEMBER STATUS
-========================= */
+            const name =
+                document.getElementById(
+                    "memberName"
+                ).value.trim();
 
-function getMemberStatus(
-    endDate
-) {
+            const phone =
+                document.getElementById(
+                    "memberPhone"
+                ).value.trim();
 
-    const today =
-        new Date();
+            const plan =
+                document.getElementById(
+                    "memberPlan"
+                ).value;
 
-    today.setHours(
-        0,
-        0,
-        0,
-        0
-    );
+            const price =
+                Number(
+                    document.getElementById(
+                        "memberPrice"
+                    ).value
+                );
 
-
-    const expiration =
-        new Date(
-            endDate
-        );
-
-
-    if (
-        expiration >= today
-    ) {
-
-        return "Active";
-
-    }
+            const startDate =
+                document.getElementById(
+                    "memberStartDate"
+                ).value;
 
 
-    return "Expired";
+            if (name.length < 2) {
 
-}
+                showToast(
+                    "Nom invalide."
+                );
 
+                return;
 
-/* =========================
-   DISPLAY MEMBERS
-========================= */
-
-function displayMembers(
-    data = members
-) {
-
-    membersTable.innerHTML = "";
+            }
 
 
-    if (
-        data.length === 0
-    ) {
+            if (!phone) {
 
-        membersTable.innerHTML = `
+                showToast(
+                    "Téléphone obligatoire."
+                );
 
-            <tr>
+                return;
 
-                <td
-                    colspan="8"
-                    style="
-                        text-align:center;
-                        color:#9ca3af;
-                        padding:30px;
-                    "
-                >
-
-                    Aucun membre trouvé.
-
-                </td>
-
-            </tr>
-
-        `;
-
-        return;
-
-    }
+            }
 
 
-    data.forEach(
-        function (member) {
+            if (!plan) {
 
-            const status =
-                getMemberStatus(
-                    member.endDate
+                showToast(
+                    "Choisissez un abonnement."
+                );
+
+                return;
+
+            }
+
+
+            if (price <= 0) {
+
+                showToast(
+                    "Prix invalide."
+                );
+
+                return;
+
+            }
+
+
+            if (!startDate) {
+
+                showToast(
+                    "Date de début obligatoire."
+                );
+
+                return;
+
+            }
+
+
+            const endDate =
+                calculateEndDate(
+                    startDate,
+                    plan
                 );
 
 
-            const row =
-                document.createElement(
-                    "tr"
+            if (id) {
+
+                const member =
+                    members.find(
+                        item =>
+                            String(item.id) ===
+                            String(id)
+                    );
+
+                if (member) {
+
+                    member.name =
+                        name;
+
+                    member.phone =
+                        phone;
+
+                    member.plan =
+                        plan;
+
+                    member.price =
+                        price;
+
+                    member.startDate =
+                        startDate;
+
+                    member.endDate =
+                        endDate;
+
+                    showToast(
+                        "Membre modifié."
+                    );
+
+                }
+
+            } else {
+
+                const member = {
+
+                    id: Date.now(),
+
+                    name: name,
+
+                    phone: phone,
+
+                    plan: plan,
+
+                    price: price,
+
+                    startDate: startDate,
+
+                    endDate: endDate
+
+                };
+
+                members.push(member);
+
+                showToast(
+                    "Membre ajouté."
                 );
 
-
-            row.innerHTML = `
-
-                <td>
-                    <strong>
-                        ${member.name}
-                    </strong>
-                </td>
-
-                <td>
-                    ${member.phone}
-                </td>
-
-                <td>
-                    ${member.plan}
-                </td>
-
-                <td>
-                    ${member.price} DH
-                </td>
-
-                <td>
-                    ${member.startDate}
-                </td>
-
-                <td>
-                    ${member.endDate}
-                </td>
-
-                <td>
-
-                    <span
-                        class="status ${
-                            status === "Active"
-                            ? "status-active"
-                            : "status-expired"
-                        }"
-                    >
-
-                        ${status}
-
-                    </span>
-
-                </td>
-
-                <td>
-
-                    <button
-                        class="edit-btn"
-                        onclick="editMember(${member.id})"
-                    >
-                        Modifier
-                    </button>
-
-                    <button
-                        class="delete-btn"
-                        onclick="deleteMember(${member.id})"
-                    >
-                        Supprimer
-                    </button>
-
-                </td>
-
-            `;
+            }
 
 
-            membersTable.appendChild(
-                row
-            );
+            saveMembers();
+
+            closeMemberModal();
+
+            displayMembers();
+
+            updateAnalytics();
+
+            loadPaymentMembers();
+
+            updateExpirationAlert();
 
         }
     );
@@ -595,100 +672,387 @@ function displayMembers(
 }
 
 
-/* =========================
+/* ==================================================
+   MEMBER STATUS
+================================================== */
+
+function getMemberStatus(member) {
+
+    if (!member.endDate) {
+
+        return {
+            text: "Inconnu",
+            className: "status-warning"
+        };
+
+    }
+
+    const today =
+        new Date(
+            getTodayString() +
+            "T00:00:00"
+        );
+
+    const end =
+        new Date(
+            member.endDate +
+            "T00:00:00"
+        );
+
+    const difference =
+        Math.ceil(
+            (
+                end - today
+            ) /
+            (
+                1000 *
+                60 *
+                60 *
+                24
+            )
+        );
+
+
+    if (difference < 0) {
+
+        return {
+            text: "Expiré",
+            className: "status-expired"
+        };
+
+    }
+
+
+    if (difference <= 7) {
+
+        return {
+            text:
+                difference === 0
+                    ? "Expire aujourd'hui"
+                    : `Expire dans ${difference} j`,
+            className: "status-warning"
+        };
+
+    }
+
+
+    return {
+        text: "Actif",
+        className: "status-active"
+    };
+
+}
+
+
+/* ==================================================
+   DISPLAY MEMBERS
+================================================== */
+
+function displayMembers() {
+
+    if (!membersTable) return;
+
+
+    const searchInput =
+        document.getElementById(
+            "searchMember"
+        );
+
+    const filterInput =
+        document.getElementById(
+            "filterPlan"
+        );
+
+
+    const search =
+        searchInput
+            ? searchInput.value
+                .toLowerCase()
+                .trim()
+            : "";
+
+
+    const planFilter =
+        filterInput
+            ? filterInput.value
+            : "all";
+
+
+    const filtered =
+        members.filter(member => {
+
+            const name =
+                String(
+                    member.name || ""
+                ).toLowerCase();
+
+            const phone =
+                String(
+                    member.phone || ""
+                ).toLowerCase();
+
+            const plan =
+                String(
+                    member.plan || ""
+                ).toLowerCase();
+
+
+            const matchesSearch =
+                name.includes(search) ||
+                phone.includes(search) ||
+                plan.includes(search);
+
+
+            const matchesPlan =
+                !planFilter ||
+                planFilter === "all" ||
+                planFilter === "Tous" ||
+                member.plan === planFilter;
+
+
+            return (
+                matchesSearch &&
+                matchesPlan
+            );
+
+        });
+
+
+    membersTable.innerHTML = "";
+
+
+    if (filtered.length === 0) {
+
+        membersTable.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty-state">
+                    Aucun membre trouvé.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    filtered.forEach(member => {
+
+        const status =
+            getMemberStatus(member);
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${escapeHTML(member.name)}
+                </strong>
+            </td>
+
+            <td>
+                ${escapeHTML(member.phone)}
+            </td>
+
+            <td>
+                ${escapeHTML(member.plan)}
+            </td>
+
+            <td>
+                ${formatMoney(member.price)}
+            </td>
+
+            <td>
+                ${formatDate(member.startDate)}
+            </td>
+
+            <td>
+                ${formatDate(member.endDate)}
+            </td>
+
+            <td>
+                <span class="${status.className}">
+                    ${escapeHTML(status.text)}
+                </span>
+            </td>
+
+            <td>
+
+                <button
+                    class="action-btn"
+                    title="Profil"
+                    onclick="openProfile('${member.id}')"
+                >
+                    👤
+                </button>
+
+                <button
+                    class="action-btn"
+                    title="Modifier"
+                    onclick="editMember('${member.id}')"
+                >
+                    ✏️
+                </button>
+
+                <button
+                    class="action-btn"
+                    title="Renouveler"
+                    onclick="renewMember('${member.id}')"
+                >
+                    🔄
+                </button>
+
+                <button
+                    class="action-btn"
+                    title="Supprimer"
+                    onclick="deleteMember('${member.id}')"
+                >
+                    🗑️
+                </button>
+
+            </td>
+
+        `;
+
+
+        membersTable.appendChild(row);
+
+    });
+
+}
+
+
+/* ==================================================
    EDIT MEMBER
-========================= */
+================================================== */
 
 function editMember(id) {
 
     const member =
         members.find(
-            function (member) {
+            item =>
+                String(item.id) ===
+                String(id)
+        );
 
-                return member.id === id;
+    if (member) {
 
-            }
+        openMemberModal(member);
+
+    }
+
+}
+
+
+/* ==================================================
+   DELETE MEMBER
+================================================== */
+
+function deleteMember(id) {
+
+    const member =
+        members.find(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+    if (!member) return;
+
+
+    const confirmed =
+        confirm(
+            `Supprimer ${member.name} ?`
         );
 
 
-    if (!member) {
-        return;
-    }
+    if (!confirmed) return;
 
 
-    document.getElementById(
-        "memberId"
-    ).value =
-        member.id;
+    members =
+        members.filter(
+            item =>
+                String(item.id) !==
+                String(id)
+        );
 
 
-    document.getElementById(
-        "memberName"
-    ).value =
-        member.name;
+    payments =
+        payments.filter(
+            payment =>
+                String(payment.memberId) !==
+                String(id)
+        );
 
 
-    document.getElementById(
-        "memberPhone"
-    ).value =
-        member.phone;
+    saveMembers();
+
+    savePayments();
+
+    displayMembers();
+
+    displayPayments();
+
+    displayRecentPayments();
+
+    updateAnalytics();
+
+    updatePaymentStats();
+
+    loadPaymentMembers();
+
+    updateExpirationAlert();
+
+    updateRevenueChart();
 
 
-    document.getElementById(
-        "memberPlan"
-    ).value =
-        member.plan;
-
-
-    document.getElementById(
-        "memberPrice"
-    ).value =
-        member.price;
-
-
-    document.getElementById(
-        "memberStartDate"
-    ).value =
-        member.startDate;
-
-
-    document.getElementById(
-        "memberModalTitle"
-    ).textContent =
-        "Modifier le membre";
-
-
-    memberModal.classList.add(
-        "active"
+    showToast(
+        "Membre supprimé."
     );
 
 }
 
 
-/* =========================
-   DELETE MEMBER
-========================= */
+/* ==================================================
+   RENEW MEMBER
+================================================== */
 
-function deleteMember(id) {
+function renewMember(id) {
 
-    const confirmed =
-        confirm(
-            "Voulez-vous supprimer ce membre ?"
+    const member =
+        members.find(
+            item =>
+                String(item.id) ===
+                String(id)
         );
 
+    if (!member) return;
 
-    if (!confirmed) {
-        return;
+
+    const today =
+        getTodayString();
+
+
+    let currentEnd =
+        member.endDate || today;
+
+
+    if (currentEnd < today) {
+        currentEnd = today;
     }
 
 
-    members =
-        members.filter(
-            function (member) {
+    member.startDate =
+        currentEnd;
 
-                return member.id !== id;
-
-            }
+    member.endDate =
+        calculateEndDate(
+            currentEnd,
+            member.plan
         );
 
 
@@ -698,225 +1062,395 @@ function deleteMember(id) {
 
     updateAnalytics();
 
-    loadPaymentMembers();
+    updateExpirationAlert();
+
+
+    showToast(
+        "Abonnement renouvelé."
+    );
 
 }
 
 
-/* =========================
-   SEARCH
-========================= */
+/* ==================================================
+   SEARCH + FILTER
+================================================== */
 
-searchMember.addEventListener(
-    "input",
-    filterMembers
-);
+const searchMember =
+    document.getElementById(
+        "searchMember"
+    );
 
+if (searchMember) {
 
-filterPlan.addEventListener(
-    "change",
-    filterMembers
-);
+    searchMember.addEventListener(
+        "input",
+        displayMembers
+    );
 
-
-function filterMembers() {
-
-    const search =
-        searchMember.value
-            .toLowerCase()
-            .trim();
+}
 
 
-    const plan =
-        filterPlan.value;
+const filterPlan =
+    document.getElementById(
+        "filterPlan"
+    );
+
+if (filterPlan) {
+
+    filterPlan.addEventListener(
+        "change",
+        displayMembers
+    );
+
+}
 
 
-    const filtered =
-        members.filter(
-            function (member) {
+/* ==================================================
+   PAYMENT MODAL
+================================================== */
 
-                const matchesSearch =
-                    member.name
-                        .toLowerCase()
-                        .includes(search);
+function openPaymentModal(
+    selectedMemberId = null
+) {
 
+    if (members.length === 0) {
 
-                const matchesPlan =
-                    plan === "all" ||
-                    member.plan === plan;
-
-
-                return (
-                    matchesSearch &&
-                    matchesPlan
-                );
-
-            }
+        showToast(
+            "Ajoutez d'abord un membre."
         );
 
+        return;
 
-    displayMembers(
-        filtered
+    }
+
+
+    if (!paymentModal || !paymentForm) {
+        return;
+    }
+
+
+    paymentModal.classList.add(
+        "show"
+    );
+
+
+    paymentForm.reset();
+
+
+    const paymentDate =
+        document.getElementById(
+            "paymentDate"
+        );
+
+    if (paymentDate) {
+
+        paymentDate.value =
+            getTodayString();
+
+    }
+
+
+    loadPaymentMembers(
+        selectedMemberId
     );
 
 }
 
 
-/* =========================
-   PAYMENTS
-========================= */
+function closePaymentModal() {
 
-let payments =
-    JSON.parse(
-        localStorage.getItem(
-            "payments"
-        )
-    ) || [];
+    if (!paymentModal) return;
 
-
-/* =========================
-   PAYMENT ELEMENTS
-========================= */
-
-const paymentModal =
-    document.getElementById(
-        "paymentModal"
+    paymentModal.classList.remove(
+        "show"
     );
 
-const paymentForm =
-    document.getElementById(
-        "paymentForm"
-    );
+}
+
 
 const addPaymentBtn =
     document.getElementById(
         "addPaymentBtn"
     );
 
-const closePaymentModal =
+if (addPaymentBtn) {
+
+    addPaymentBtn.addEventListener(
+        "click",
+        () => openPaymentModal()
+    );
+
+}
+
+
+const closePaymentModalBtn =
     document.getElementById(
         "closePaymentModal"
     );
+
+if (closePaymentModalBtn) {
+
+    closePaymentModalBtn.addEventListener(
+        "click",
+        closePaymentModal
+    );
+
+}
+
 
 const cancelPayment =
     document.getElementById(
         "cancelPayment"
     );
 
-const paymentsTable =
-    document.getElementById(
-        "paymentsTable"
-    );
+if (cancelPayment) {
 
-const paymentMember =
-    document.getElementById(
-        "paymentMember"
-    );
-
-
-/* =========================
-   OPEN PAYMENT MODAL
-========================= */
-
-addPaymentBtn.addEventListener(
-    "click",
-    function () {
-
-        paymentForm.reset();
-
-        loadPaymentMembers();
-
-        document.getElementById(
-            "paymentDate"
-        ).value =
-            formatDate(
-                new Date()
-            );
-
-        paymentModal.classList.add(
-            "active"
-        );
-
-    }
-);
-
-
-/* =========================
-   CLOSE PAYMENT MODAL
-========================= */
-
-function closePaymentModalFunction() {
-
-    paymentModal.classList.remove(
-        "active"
+    cancelPayment.addEventListener(
+        "click",
+        closePaymentModal
     );
 
 }
 
 
-closePaymentModal.addEventListener(
-    "click",
-    closePaymentModalFunction
-);
+/* ==================================================
+   LOAD PAYMENT MEMBERS
+================================================== */
+
+function loadPaymentMembers(
+    selectedMemberId = null
+) {
+
+    const select =
+        document.getElementById(
+            "paymentMember"
+        );
+
+    if (!select) return;
 
 
-cancelPayment.addEventListener(
-    "click",
-    closePaymentModalFunction
-);
+    select.innerHTML = `
+        <option value="">
+            Choisir un membre
+        </option>
+    `;
 
 
-/* =========================
-   LOAD MEMBERS IN PAYMENT
-========================= */
-
-function loadPaymentMembers() {
-
-    paymentMember.innerHTML = "";
-
-
-    if (
-        members.length === 0
-    ) {
+    members.forEach(member => {
 
         const option =
             document.createElement(
                 "option"
             );
 
-        option.value = "";
+        option.value =
+            member.id;
 
         option.textContent =
-            "Aucun membre disponible";
-
-        paymentMember.appendChild(
-            option
-        );
-
-        return;
-
-    }
+            `${member.name} - ${member.plan}`;
 
 
-    members.forEach(
-        function (member) {
+        if (
+            selectedMemberId !== null &&
+            String(member.id) ===
+            String(selectedMemberId)
+        ) {
 
-            const option =
-                document.createElement(
-                    "option"
+            option.selected =
+                true;
+
+        }
+
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+/* ==================================================
+   AUTO PRICE FROM MEMBER
+================================================== */
+
+const paymentMember =
+    document.getElementById(
+        "paymentMember"
+    );
+
+if (paymentMember) {
+
+    paymentMember.addEventListener(
+        "change",
+        function () {
+
+            const member =
+                members.find(
+                    item =>
+                        String(item.id) ===
+                        String(this.value)
+                );
+
+            const amount =
+                document.getElementById(
+                    "paymentAmount"
+                );
+
+            if (
+                member &&
+                amount &&
+                !amount.value
+            ) {
+
+                amount.value =
+                    member.price;
+
+            }
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   PAYMENT FORM
+================================================== */
+
+if (paymentForm) {
+
+    paymentForm.addEventListener(
+        "submit",
+        function (event) {
+
+            event.preventDefault();
+
+
+            const memberId =
+                document.getElementById(
+                    "paymentMember"
+                ).value;
+
+
+            const amount =
+                Number(
+                    document.getElementById(
+                        "paymentAmount"
+                    ).value
                 );
 
 
-            option.value =
-                member.id;
+            const date =
+                document.getElementById(
+                    "paymentDate"
+                ).value;
 
 
-            option.textContent =
-                member.name;
+            const method =
+                document.getElementById(
+                    "paymentMethod"
+                ).value;
 
 
-            paymentMember.appendChild(
-                option
+            const member =
+                members.find(
+                    item =>
+                        String(item.id) ===
+                        String(memberId)
+                );
+
+
+            if (!member) {
+
+                showToast(
+                    "Choisissez un membre."
+                );
+
+                return;
+
+            }
+
+
+            if (amount <= 0) {
+
+                showToast(
+                    "Montant invalide."
+                );
+
+                return;
+
+            }
+
+
+            if (!date) {
+
+                showToast(
+                    "Date obligatoire."
+                );
+
+                return;
+
+            }
+
+
+            if (!method) {
+
+                showToast(
+                    "Choisissez un mode de paiement."
+                );
+
+                return;
+
+            }
+
+
+            const payment = {
+
+                id: Date.now(),
+
+                memberId:
+                    member.id,
+
+                memberName:
+                    member.name,
+
+                amount:
+
+                    amount,
+
+                date:
+
+                    date,
+
+                method:
+
+                    method
+
+            };
+
+
+            payments.push(payment);
+
+            savePayments();
+
+
+            closePaymentModal();
+
+
+            displayPayments();
+
+            displayRecentPayments();
+
+            updatePaymentStats();
+
+            updateAnalytics();
+
+            updateRevenueChart();
+
+
+            showToast(
+                "Paiement enregistré."
             );
 
         }
@@ -925,379 +1459,340 @@ function loadPaymentMembers() {
 }
 
 
-/* =========================
-   ADD PAYMENT
-========================= */
+/* ==================================================
+   DISPLAY PAYMENTS
+================================================== */
 
-paymentForm.addEventListener(
-    "submit",
-    function (event) {
+function displayPayments() {
 
-        event.preventDefault();
+    if (!paymentsTable) return;
 
 
-        const memberId =
-            Number(
-                paymentMember.value
-            );
+    paymentsTable.innerHTML = "";
 
 
-        const member =
-            members.find(
-                function (member) {
+    if (payments.length === 0) {
 
-                    return member.id === memberId;
+        paymentsTable.innerHTML = `
+            <tr>
+                <td colspan="5" class="empty-state">
+                    Aucun paiement.
+                </td>
+            </tr>
+        `;
 
-                }
-            );
+        return;
+
+    }
 
 
-        if (!member) {
+    const sorted =
+        [...payments].sort(
+            (a, b) =>
+                new Date(b.date) -
+                new Date(a.date)
+        );
 
-            alert(
-                "Veuillez sélectionner un membre."
-            );
+
+    sorted.forEach(payment => {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${escapeHTML(payment.memberName)}
+                </strong>
+            </td>
+
+            <td>
+                ${formatMoney(payment.amount)}
+            </td>
+
+            <td>
+                ${formatDate(payment.date)}
+            </td>
+
+            <td>
+                ${escapeHTML(payment.method)}
+            </td>
+
+            <td>
+
+                <button
+                    class="action-btn"
+                    title="Supprimer"
+                    onclick="deletePayment('${payment.id}')"
+                >
+                    🗑️
+                </button>
+
+            </td>
+
+        `;
+
+
+        paymentsTable.appendChild(row);
+
+    });
+
+}
+
+
+/* ==================================================
+   DELETE PAYMENT
+================================================== */
+
+function deletePayment(id) {
+
+    const confirmed =
+        confirm(
+            "Supprimer ce paiement ?"
+        );
+
+
+    if (!confirmed) return;
+
+
+    payments =
+        payments.filter(
+            payment =>
+                String(payment.id) !==
+                String(id)
+        );
+
+
+    savePayments();
+
+
+    displayPayments();
+
+    displayRecentPayments();
+
+    updatePaymentStats();
+
+    updateAnalytics();
+
+    updateRevenueChart();
+
+
+    showToast(
+        "Paiement supprimé."
+    );
+
+}
+
+
+/* ==================================================
+   PAYMENT STATS
+================================================== */
+
+function updatePaymentStats() {
+
+    const total =
+        payments.reduce(
+            (
+                sum,
+                payment
+            ) =>
+                sum +
+                Number(
+                    payment.amount || 0
+                ),
+            0
+        );
+
+
+    const paymentCount =
+        document.getElementById(
+            "paymentCount"
+        );
+
+    const paymentTotal =
+        document.getElementById(
+            "paymentTotal"
+        );
+
+
+    if (paymentCount) {
+
+        paymentCount.textContent =
+            payments.length;
+
+    }
+
+
+    if (paymentTotal) {
+
+        paymentTotal.textContent =
+            formatMoney(total);
+
+    }
+
+}
+
+
+/* ==================================================
+   RECENT PAYMENTS
+================================================== */
+
+function displayRecentPayments() {
+
+    if (!recentPayments) return;
+
+
+    recentPayments.innerHTML = "";
+
+
+    if (payments.length === 0) {
+
+        recentPayments.innerHTML = `
+            <p style="color:#94a3b8;">
+                Aucun paiement récent.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    const sorted =
+        [...payments].sort(
+            (a, b) =>
+                new Date(b.date) -
+                new Date(a.date)
+        );
+
+
+    sorted
+        .slice(0, 5)
+        .forEach(payment => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "recent-item";
+
+
+            item.innerHTML = `
+
+                <div>
+
+                    <strong>
+                        ${escapeHTML(
+                            payment.memberName
+                        )}
+                    </strong>
+
+                    <small>
+                        ${formatDate(
+                            payment.date
+                        )}
+                        ·
+                        ${escapeHTML(
+                            payment.method
+                        )}
+                    </small>
+
+                </div>
+
+                <strong>
+                    ${formatMoney(
+                        payment.amount
+                    )}
+                </strong>
+
+            `;
+
+
+            recentPayments.appendChild(item);
+
+        });
+
+}
+
+
+/* ==================================================
+   ANALYTICS
+================================================== */
+
+function updateAnalytics() {
+
+    const today =
+        new Date(
+            getTodayString() +
+            "T00:00:00"
+        );
+
+
+    let active = 0;
+
+    let expired = 0;
+
+
+    members.forEach(member => {
+
+        if (!member.endDate) {
+
+            expired++;
 
             return;
 
         }
 
 
-        const amount =
-            Number(
-                document.getElementById(
-                    "paymentAmount"
-                ).value
+        const end =
+            new Date(
+                member.endDate +
+                "T00:00:00"
             );
 
 
-        const date =
-            document.getElementById(
-                "paymentDate"
-            ).value;
+        if (end >= today) {
 
+            active++;
 
-        const method =
-            document.getElementById(
-                "paymentMethod"
-            ).value;
+        } else {
 
-
-        const newPayment = {
-
-            id:
-                Date.now(),
-
-            memberId:
-                memberId,
-
-            memberName:
-                member.name,
-
-            amount:
-                amount,
-
-            date:
-                date,
-
-            method:
-                method
-
-        };
-
-
-        payments.push(
-            newPayment
-        );
-
-
-        savePayments();
-
-        displayPayments();
-
-        closePaymentModalFunction();
-
-    }
-);
-
-
-/* =========================
-   SAVE PAYMENTS
-========================= */
-
-function savePayments() {
-
-    localStorage.setItem(
-        "payments",
-        JSON.stringify(
-            payments
-        )
-    );
-
-}
-
-
-/* =========================
-   DISPLAY PAYMENTS
-========================= */
-
-function displayPayments() {
-
-    paymentsTable.innerHTML = "";
-
-
-    if (
-        payments.length === 0
-    ) {
-
-        paymentsTable.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="5"
-                    style="
-                        text-align:center;
-                        color:#9ca3af;
-                        padding:30px;
-                    "
-                >
-
-                    Aucun paiement enregistré.
-
-                </td>
-
-            </tr>
-
-        `;
-
-    } else {
-
-        payments
-            .slice()
-            .reverse()
-            .forEach(
-                function (payment) {
-
-                    const row =
-                        document.createElement(
-                            "tr"
-                        );
-
-
-                    row.innerHTML = `
-
-                        <td>
-                            ${payment.memberName}
-                        </td>
-
-                        <td>
-                            <strong>
-                                ${payment.amount} DH
-                            </strong>
-                        </td>
-
-                        <td>
-                            ${payment.date}
-                        </td>
-
-                        <td>
-                            ${payment.method}
-                        </td>
-
-                        <td>
-
-                            <button
-                                class="delete-btn"
-                                onclick="deletePayment(${payment.id})"
-                            >
-                                Supprimer
-                            </button>
-
-                        </td>
-
-                    `;
-
-
-                    paymentsTable.appendChild(
-                        row
-                    );
-
-                }
-            );
-
-    }
-
-
-    updatePaymentStats();
-
-    updateAnalytics();
-
-    displayRecentPayments();
-
-    updateRevenueChart();
-
-}
-
-
-/* =========================
-   PAYMENT STATS
-========================= */
-
-function updatePaymentStats() {
-
-    const total =
-        payments.reduce(
-            function (
-                total,
-                payment
-            ) {
-
-                return (
-                    total +
-                    Number(
-                        payment.amount || 0
-                    )
-                );
-
-            },
-            0
-        );
-
-
-    document.getElementById(
-        "paymentCount"
-    ).textContent =
-        payments.length;
-
-
-    document.getElementById(
-        "paymentTotal"
-    ).textContent =
-        total + " DH";
-
-}
-
-
-/* =========================
-   DELETE PAYMENT
-========================= */
-
-function deletePayment(id) {
-
-    const confirmed =
-        confirm(
-            "Voulez-vous supprimer ce paiement ?"
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    payments =
-        payments.filter(
-            function (payment) {
-
-                return payment.id !== id;
-
-            }
-        );
-
-
-    savePayments();
-
-    displayPayments();
-
-}
-
-
-/* =========================
-   ANALYTICS
-========================= */
-
-function updateAnalytics() {
-
-    const totalMembers =
-        members.length;
-
-
-    let activeMembers = 0;
-
-    let expiredMembers = 0;
-
-
-    members.forEach(
-        function (member) {
-
-            if (
-                getMemberStatus(
-                    member.endDate
-                ) === "Active"
-            ) {
-
-                activeMembers++;
-
-            } else {
-
-                expiredMembers++;
-
-            }
+            expired++;
 
         }
-    );
 
-
-    const totalPayments =
-        payments.reduce(
-            function (
-                total,
-                payment
-            ) {
-
-                return (
-                    total +
-                    Number(
-                        payment.amount || 0
-                    )
-                );
-
-            },
-            0
-        );
+    });
 
 
     const currentMonth =
-        new Date().getMonth();
-
+        today.getMonth();
 
     const currentYear =
-        new Date().getFullYear();
+        today.getFullYear();
 
 
-    const monthlyRevenue =
+    const monthRevenue =
         payments.reduce(
-            function (
+            (
                 total,
                 payment
-            ) {
-
-                if (!payment.date) {
-                    return total;
-                }
-
+            ) => {
 
                 const date =
                     new Date(
-                        payment.date
+                        payment.date +
+                        "T00:00:00"
                     );
 
 
                 if (
                     date.getMonth() ===
-                    currentMonth
-                    &&
+                    currentMonth &&
                     date.getFullYear() ===
                     currentYear
                 ) {
@@ -1319,198 +1814,289 @@ function updateAnalytics() {
         );
 
 
-    document.getElementById(
-        "totalMembers"
-    ).textContent =
-        totalMembers;
+    if (totalMembers) {
+
+        totalMembers.textContent =
+            members.length;
+
+    }
 
 
-    document.getElementById(
-        "activeMembers"
-    ).textContent =
-        activeMembers;
+    if (activeMembers) {
+
+        activeMembers.textContent =
+            active;
+
+    }
 
 
-    document.getElementById(
-        "expiredMembers"
-    ).textContent =
-        expiredMembers;
+    if (expiredMembers) {
+
+        expiredMembers.textContent =
+            expired;
+
+    }
 
 
-    document.getElementById(
-        "totalPayments"
-    ).textContent =
-        totalPayments + " DH";
+    if (totalPayments) {
+
+        totalPayments.textContent =
+            payments.length;
+
+    }
 
 
-    document.getElementById(
-        "monthlyRevenue"
-    ).textContent =
-        monthlyRevenue + " DH";
+    if (monthlyRevenue) {
+
+        monthlyRevenue.textContent =
+            formatMoney(
+                monthRevenue
+            );
+
+    }
 
 }
 
 
-/* =========================
-   RECENT PAYMENTS
-========================= */
+/* ==================================================
+   EXPIRATION ALERT
+================================================== */
 
-function displayRecentPayments() {
+function updateExpirationAlert() {
 
-    const container =
+    const alertBox =
         document.getElementById(
-            "recentPayments"
+            "expirationAlert"
+        );
+
+    const alertText =
+        document.getElementById(
+            "expirationAlertText"
         );
 
 
-    container.innerHTML = "";
+    if (!alertBox || !alertText) {
+        return;
+    }
 
 
-    const recent =
-        payments
-            .slice()
-            .reverse()
-            .slice(
-                0,
-                5
-            );
+    const today =
+        new Date(
+            getTodayString() +
+            "T00:00:00"
+        );
 
 
-    if (
-        recent.length === 0
-    ) {
+    const expiring =
+        members.filter(
+            member => {
 
-        container.innerHTML = `
+                if (!member.endDate) {
+                    return false;
+                }
 
-            <div
-                style="
-                    color:#9ca3af;
-                    text-align:center;
-                    padding:20px;
-                "
-            >
 
-                Aucun paiement récent.
+                const end =
+                    new Date(
+                        member.endDate +
+                        "T00:00:00"
+                    );
 
-            </div>
 
-        `;
+                const days =
+                    Math.ceil(
+                        (
+                            end - today
+                        ) /
+                        (
+                            1000 *
+                            60 *
+                            60 *
+                            24
+                        )
+                    );
+
+
+                return (
+                    days >= 0 &&
+                    days <= 7
+                );
+
+            }
+        );
+
+
+    if (expiring.length === 0) {
+
+        alertBox.style.display =
+            "none";
 
         return;
 
     }
 
 
-    recent.forEach(
-        function (payment) {
-
-            const div =
-                document.createElement(
-                    "div"
-                );
+    alertBox.style.display =
+        "flex";
 
 
-            div.className =
-                "recent-payment";
-
-
-            div.innerHTML = `
-
-                <div>
-
-                    <strong>
-                        ${payment.memberName}
-                    </strong>
-
-                    <small>
-                        ${payment.date}
-                        ·
-                        ${payment.method}
-                    </small>
-
-                </div>
-
-
-                <div class="payment-amount">
-
-                    +${payment.amount} DH
-
-                </div>
-
-            `;
-
-
-            container.appendChild(
-                div
-            );
-
-        }
-    );
+    alertText.textContent =
+        `${expiring.length} abonnement(s) expire(nt) dans les 7 prochains jours.`;
 
 }
 
 
-/* =========================
-   OFFLINE REVENUE CHART
-========================= */
+/* ==================================================
+   CHART YEARS
+================================================== */
 
-const revenueChartCanvas =
-    document.getElementById(
-        "revenueChart"
-    );
+function setupChartYears() {
 
-
-const chartContext =
-    revenueChartCanvas.getContext(
-        "2d"
-    );
+    if (!chartYear) return;
 
 
-function updateRevenueChart() {
-
-    const canvas =
-        revenueChartCanvas;
+    const currentYear =
+        new Date().getFullYear();
 
 
-    const ctx =
-        chartContext;
+    chartYear.innerHTML = "";
 
 
-    const width =
-        canvas.clientWidth;
-
-
-    const height =
-        canvas.clientHeight;
-
-
-    if (
-        width <= 0 ||
-        height <= 0
+    for (
+        let year = currentYear;
+        year >= currentYear - 4;
+        year--
     ) {
 
-        return;
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value =
+            year;
+
+
+        option.textContent =
+            year;
+
+
+        chartYear.appendChild(option);
 
     }
 
 
-    const ratio =
+    chartYear.value =
+        currentYear;
+
+}
+
+
+/* ==================================================
+   REVENUE CHART
+================================================== */
+
+function updateRevenueChart() {
+
+    if (!canvas || !ctx || !chartYear) {
+        return;
+    }
+
+
+    const year =
+        Number(
+            chartYear.value
+        );
+
+
+    const totals =
+        Array(12).fill(0);
+
+
+    payments.forEach(payment => {
+
+        if (!payment.date) {
+            return;
+        }
+
+
+        const date =
+            new Date(
+                payment.date +
+                "T00:00:00"
+            );
+
+
+        if (
+            date.getFullYear() ===
+            year
+        ) {
+
+            totals[
+                date.getMonth()
+            ] +=
+                Number(
+                    payment.amount || 0
+                );
+
+        }
+
+    });
+
+
+    const hasData =
+        totals.some(
+            value =>
+                value > 0
+        );
+
+
+    const chartEmpty =
+        document.getElementById(
+            "chartEmpty"
+        );
+
+
+    if (chartEmpty) {
+
+        chartEmpty.style.display =
+            hasData
+                ? "none"
+                : "flex";
+
+    }
+
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+
+    const width =
+        rect.width || 600;
+
+
+    const height =
+        rect.height || 330;
+
+
+    const dpr =
         window.devicePixelRatio || 1;
 
 
     canvas.width =
-        width * ratio;
+        width * dpr;
 
 
     canvas.height =
-        height * ratio;
+        height * dpr;
 
 
     ctx.setTransform(
-        ratio,
+        dpr,
         0,
         0,
-        ratio,
+        dpr,
         0,
         0
     );
@@ -1524,73 +2110,13 @@ function updateRevenueChart() {
     );
 
 
-    const months = [
-
-        "Jan",
-        "Fév",
-        "Mar",
-        "Avr",
-        "Mai",
-        "Juin",
-        "Juil",
-        "Août",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Déc"
-
-    ];
-
-
-    const monthlyRevenue =
-        Array(12).fill(0);
-
-
-    payments.forEach(
-        function (payment) {
-
-            if (!payment.date) {
-                return;
-            }
-
-
-            const paymentDate =
-                new Date(
-                    payment.date
-                );
-
-
-            if (
-                isNaN(
-                    paymentDate.getTime()
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            const month =
-                paymentDate.getMonth();
-
-
-            monthlyRevenue[month] +=
-                Number(
-                    payment.amount || 0
-                );
-
-        }
-    );
-
-
     const paddingLeft = 65;
 
     const paddingRight = 25;
 
-    const paddingTop = 35;
+    const paddingTop = 30;
 
-    const paddingBottom = 50;
+    const paddingBottom = 45;
 
 
     const chartWidth =
@@ -1605,68 +2131,56 @@ function updateRevenueChart() {
         paddingBottom;
 
 
-    const maxRevenue =
+    const maxValue =
         Math.max(
-            ...monthlyRevenue,
+            ...totals,
             100
         );
 
 
-    const roundedMax =
-        Math.ceil(
-            maxRevenue / 100
-        ) * 100;
+    const isLight =
+        document.body.classList.contains(
+            "light-mode"
+        );
+
+
+    ctx.strokeStyle =
+        isLight
+            ? "#e5e7eb"
+            : "#334155";
 
 
     ctx.fillStyle =
-        "#111827";
-
-
-    ctx.fillRect(
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    const gridLines = 5;
+        isLight
+            ? "#64748b"
+            : "#94a3b8";
 
 
     ctx.font =
-        "12px Arial";
+        "11px Arial";
 
 
-    ctx.textAlign =
-        "right";
-
-
-    ctx.textBaseline =
-        "middle";
-
+    /* GRID */
 
     for (
         let i = 0;
-        i <= gridLines;
+        i <= 4;
         i++
     ) {
 
         const y =
             paddingTop +
-            (
-                chartHeight /
-                gridLines
-            ) * i;
+            chartHeight *
+            i /
+            4;
 
 
         ctx.beginPath();
-
 
         ctx.moveTo(
             paddingLeft,
             y
         );
-
 
         ctx.lineTo(
             width -
@@ -1674,393 +2188,742 @@ function updateRevenueChart() {
             y
         );
 
-
-        ctx.strokeStyle =
-            "#374151";
-
-
-        ctx.lineWidth =
-            1;
-
-
         ctx.stroke();
 
 
         const value =
-            roundedMax -
-            (
-                roundedMax /
-                gridLines
-            ) * i;
-
-
-        ctx.fillStyle =
-            "#9ca3af";
+            maxValue -
+            maxValue *
+            i /
+            4;
 
 
         ctx.fillText(
-            Math.round(value) +
-            " DH",
-            paddingLeft - 10,
-            y
+            formatMoney(value),
+            5,
+            y + 4
         );
 
     }
 
 
-    ctx.textAlign =
-        "center";
-
-
-    ctx.textBaseline =
-        "top";
-
-
-    months.forEach(
-        function (
-            month,
-            index
-        ) {
-
-            const x =
-                paddingLeft +
-                (
-                    chartWidth /
-                    11
-                ) * index;
-
-
-            ctx.fillStyle =
-                "#9ca3af";
-
-
-            ctx.fillText(
-                month,
-                x,
-                height -
-                paddingBottom +
-                18
-            );
-
-        }
-    );
+    const months = [
+        "Jan",
+        "Fév",
+        "Mar",
+        "Avr",
+        "Mai",
+        "Juin",
+        "Juil",
+        "Août",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Déc"
+    ];
 
 
     const points = [];
 
 
-    monthlyRevenue.forEach(
-        function (
-            revenue,
-            index
-        ) {
+    totals.forEach(
+        (value, index) => {
 
             const x =
                 paddingLeft +
-                (
-                    chartWidth /
-                    11
-                ) * index;
+                index /
+                11 *
+                chartWidth;
 
 
             const y =
                 paddingTop +
                 chartHeight -
                 (
-                    revenue /
-                    roundedMax
+                    value /
+                    maxValue
                 ) *
                 chartHeight;
 
 
             points.push({
-
                 x: x,
-
                 y: y,
-
-                value: revenue
-
+                value: value
             });
 
         }
     );
 
 
-    /* AREA */
+    if (hasData) {
 
-    ctx.beginPath();
+        ctx.beginPath();
 
 
-    points.forEach(
-        function (
-            point,
-            index
-        ) {
+        points.forEach(
+            (point, index) => {
 
-            if (
-                index === 0
-            ) {
+                if (index === 0) {
 
-                ctx.moveTo(
-                    point.x,
-                    point.y
-                );
+                    ctx.moveTo(
+                        point.x,
+                        point.y
+                    );
 
-            } else {
+                } else {
 
-                ctx.lineTo(
-                    point.x,
-                    point.y
-                );
+                    ctx.lineTo(
+                        point.x,
+                        point.y
+                    );
+
+                }
 
             }
-
-        }
-    );
-
-
-    ctx.lineTo(
-        points[
-            points.length - 1
-        ].x,
-        paddingTop +
-        chartHeight
-    );
-
-
-    ctx.lineTo(
-        points[0].x,
-        paddingTop +
-        chartHeight
-    );
-
-
-    ctx.closePath();
-
-
-    const gradient =
-        ctx.createLinearGradient(
-            0,
-            paddingTop,
-            0,
-            paddingTop +
-            chartHeight
         );
 
 
-    gradient.addColorStop(
-        0,
-        "rgba(59,130,246,0.30)"
-    );
+        ctx.strokeStyle =
+            "#2563eb";
 
 
-    gradient.addColorStop(
-        1,
-        "rgba(59,130,246,0)"
-    );
+        ctx.lineWidth = 3;
 
 
-    ctx.fillStyle =
-        gradient;
+        ctx.stroke();
 
 
-    ctx.fill();
+        points.forEach(
+            point => {
+
+                ctx.beginPath();
 
 
-    /* LINE */
-
-    ctx.beginPath();
-
-
-    points.forEach(
-        function (
-            point,
-            index
-        ) {
-
-            if (
-                index === 0
-            ) {
-
-                ctx.moveTo(
+                ctx.arc(
                     point.x,
-                    point.y
+                    point.y,
+                    5,
+                    0,
+                    Math.PI * 2
                 );
-
-            } else {
-
-                ctx.lineTo(
-                    point.x,
-                    point.y
-                );
-
-            }
-
-        }
-    );
-
-
-    ctx.strokeStyle =
-        "#3b82f6";
-
-
-    ctx.lineWidth =
-        3;
-
-
-    ctx.lineJoin =
-        "round";
-
-
-    ctx.lineCap =
-        "round";
-
-
-    ctx.stroke();
-
-
-    /* POINTS */
-
-    points.forEach(
-        function (
-            point
-        ) {
-
-            ctx.beginPath();
-
-
-            ctx.arc(
-                point.x,
-                point.y,
-                5,
-                0,
-                Math.PI * 2
-            );
-
-
-            ctx.fillStyle =
-                "#3b82f6";
-
-
-            ctx.fill();
-
-
-            ctx.beginPath();
-
-
-            ctx.arc(
-                point.x,
-                point.y,
-                2,
-                0,
-                Math.PI * 2
-            );
-
-
-            ctx.fillStyle =
-                "#ffffff";
-
-
-            ctx.fill();
-
-        }
-    );
-
-
-    /* VALUES */
-
-    points.forEach(
-        function (
-            point
-        ) {
-
-            if (
-                point.value > 0
-            ) {
-
-                ctx.font =
-                    "bold 11px Arial";
-
-
-                ctx.textAlign =
-                    "center";
-
-
-                ctx.textBaseline =
-                    "bottom";
 
 
                 ctx.fillStyle =
-                    "#ffffff";
+                    "#2563eb";
 
 
-                ctx.fillText(
-                    point.value +
-                    " DH",
-                    point.x,
-                    point.y - 10
-                );
+                ctx.fill();
+
+
+                if (
+                    point.value > 0
+                ) {
+
+                    ctx.font =
+                        "bold 11px Arial";
+
+
+                    ctx.fillStyle =
+                        isLight
+                            ? "#111827"
+                            : "#f1f5f9";
+
+
+                    const text =
+                        formatMoney(
+                            point.value
+                        );
+
+
+                    const textWidth =
+                        ctx.measureText(
+                            text
+                        ).width;
+
+
+                    let textX =
+                        point.x -
+                        textWidth /
+                        2;
+
+
+                    if (textX < 5) {
+
+                        textX = 5;
+
+                    }
+
+
+                    if (
+                        textX +
+                        textWidth >
+                        width - 5
+                    ) {
+
+                        textX =
+                            width -
+                            textWidth -
+                            5;
+
+                    }
+
+
+                    let textY =
+                        point.y - 12;
+
+
+                    if (
+                        textY < 15
+                    ) {
+
+                        textY =
+                            point.y + 22;
+
+                    }
+
+
+                    ctx.fillText(
+                        text,
+                        textX,
+                        textY
+                    );
+
+                }
 
             }
+        );
+
+    }
+
+
+    /* MONTHS */
+
+    ctx.font =
+        "12px Arial";
+
+
+    ctx.fillStyle =
+        isLight
+            ? "#374151"
+            : "#cbd5e1";
+
+
+    months.forEach(
+        (month, index) => {
+
+            const x =
+                paddingLeft +
+                index /
+                11 *
+                chartWidth;
+
+
+            ctx.fillText(
+                month,
+                x - 10,
+                height - 12
+            );
 
         }
     );
 
+}
 
-    /* NO DATA */
 
-    const totalRevenue =
-        monthlyRevenue.reduce(
-            function (
-                total,
-                value
-            ) {
+/* ==================================================
+   CHART YEAR CHANGE
+================================================== */
 
-                return (
-                    total +
-                    value
-                );
+if (chartYear) {
 
-            },
-            0
+    chartYear.addEventListener(
+        "change",
+        updateRevenueChart
+    );
+
+}
+
+
+/* ==================================================
+   THEME
+================================================== */
+
+function loadTheme() {
+
+    const theme =
+        localStorage.getItem(
+            "gymTheme"
         );
 
 
-    if (
-        totalRevenue === 0
-    ) {
-
-        ctx.font =
-            "16px Arial";
-
-
-        ctx.textAlign =
-            "center";
-
-
-        ctx.textBaseline =
-            "middle";
-
-
-        ctx.fillStyle =
-            "#9ca3af";
-
-
-        ctx.fillText(
-            "Aucun paiement enregistré",
-            width / 2,
-            height / 2
+    const themeToggle =
+        document.getElementById(
+            "themeToggle"
         );
+
+
+    if (theme === "light") {
+
+        document.body.classList.add(
+            "light-mode"
+        );
+
+
+        if (themeToggle) {
+
+            themeToggle.textContent =
+                "🌙";
+
+        }
+
+    } else {
+
+        document.body.classList.remove(
+            "light-mode"
+        );
+
+
+        if (themeToggle) {
+
+            themeToggle.textContent =
+                "☀️";
+
+        }
 
     }
 
 }
 
 
-/* =========================
-   RESIZE CHART
-========================= */
+const themeToggle =
+    document.getElementById(
+        "themeToggle"
+    );
+
+
+if (themeToggle) {
+
+    themeToggle.addEventListener(
+        "click",
+        function () {
+
+            document.body.classList.toggle(
+                "light-mode"
+            );
+
+
+            const isLight =
+                document.body.classList.contains(
+                    "light-mode"
+                );
+
+
+            localStorage.setItem(
+                "gymTheme",
+                isLight
+                    ? "light"
+                    : "dark"
+            );
+
+
+            this.textContent =
+                isLight
+                    ? "🌙"
+                    : "☀️";
+
+
+            updateRevenueChart();
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   PROFILE
+================================================== */
+
+let currentProfileId = null;
+
+
+function openProfile(id) {
+
+    const member =
+        members.find(
+            item =>
+                String(item.id) ===
+                String(id)
+        );
+
+
+    if (!member || !profileModal) {
+        return;
+    }
+
+
+    currentProfileId =
+        id;
+
+
+    const status =
+        getMemberStatus(member);
+
+
+    const profileAvatar =
+        document.getElementById(
+            "profileAvatar"
+        );
+
+
+    if (profileAvatar) {
+
+        profileAvatar.textContent =
+            member.name
+                .charAt(0)
+                .toUpperCase();
+
+    }
+
+
+    document.getElementById(
+        "profileName"
+    ).textContent =
+        member.name;
+
+
+    document.getElementById(
+        "profilePhone"
+    ).textContent =
+        member.phone;
+
+
+    const statusElement =
+        document.getElementById(
+            "profileStatus"
+        );
+
+
+    if (statusElement) {
+
+        statusElement.textContent =
+            status.text;
+
+        statusElement.className =
+            status.className;
+
+    }
+
+
+    document.getElementById(
+        "profilePlan"
+    ).textContent =
+        member.plan;
+
+
+    document.getElementById(
+        "profilePrice"
+    ).textContent =
+        formatMoney(
+            member.price
+        );
+
+
+    document.getElementById(
+        "profileStartDate"
+    ).textContent =
+        formatDate(
+            member.startDate
+        );
+
+
+    document.getElementById(
+        "profileEndDate"
+    ).textContent =
+        formatDate(
+            member.endDate
+        );
+
+
+    displayProfilePayments(
+        member.id
+    );
+
+
+    profileModal.classList.add(
+        "show"
+    );
+
+}
+
+
+function closeProfileModal() {
+
+    if (!profileModal) return;
+
+    profileModal.classList.remove(
+        "show"
+    );
+
+}
+
+
+function displayProfilePayments(
+    memberId
+) {
+
+    const container =
+        document.getElementById(
+            "profilePayments"
+        );
+
+
+    if (!container) return;
+
+
+    const memberPayments =
+        payments.filter(
+            payment =>
+                String(
+                    payment.memberId
+                ) ===
+                String(memberId)
+        );
+
+
+    const total =
+        memberPayments.reduce(
+            (
+                sum,
+                payment
+            ) =>
+                sum +
+                Number(
+                    payment.amount || 0
+                ),
+            0
+        );
+
+
+    const totalElement =
+        document.getElementById(
+            "profilePaymentTotal"
+        );
+
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            formatMoney(total);
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    if (
+        memberPayments.length === 0
+    ) {
+
+        container.innerHTML = `
+            <p style="color:#94a3b8;">
+                Aucun paiement.
+            </p>
+        `;
+
+        return;
+
+    }
+
+
+    [...memberPayments]
+        .sort(
+            (a, b) =>
+                new Date(b.date) -
+                new Date(a.date)
+        )
+        .forEach(payment => {
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+
+            item.className =
+                "profile-payment";
+
+
+            item.innerHTML = `
+
+                <span>
+                    ${formatDate(payment.date)}
+                    ·
+                    ${escapeHTML(
+                        payment.method
+                    )}
+                </span>
+
+                <strong>
+                    ${formatMoney(
+                        payment.amount
+                    )}
+                </strong>
+
+            `;
+
+
+            container.appendChild(item);
+
+        });
+
+}
+
+
+const closeProfileModalBtn =
+    document.getElementById(
+        "closeProfileModal"
+    );
+
+if (closeProfileModalBtn) {
+
+    closeProfileModalBtn.addEventListener(
+        "click",
+        closeProfileModal
+    );
+
+}
+
+
+const profileCloseBtn =
+    document.getElementById(
+        "profileCloseBtn"
+    );
+
+if (profileCloseBtn) {
+
+    profileCloseBtn.addEventListener(
+        "click",
+        closeProfileModal
+    );
+
+}
+
+
+const profileRenewBtn =
+    document.getElementById(
+        "profileRenewBtn"
+    );
+
+if (profileRenewBtn) {
+
+    profileRenewBtn.addEventListener(
+        "click",
+        function () {
+
+            if (currentProfileId) {
+
+                renewMember(
+                    currentProfileId
+                );
+
+                openProfile(
+                    currentProfileId
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+const profilePaymentBtn =
+    document.getElementById(
+        "profilePaymentBtn"
+    );
+
+if (profilePaymentBtn) {
+
+    profilePaymentBtn.addEventListener(
+        "click",
+        function () {
+
+            const memberId =
+                currentProfileId;
+
+            closeProfileModal();
+
+            openPaymentModal(
+                memberId
+            );
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   MODAL OVERLAY
+================================================== */
+
+document
+    .querySelectorAll(".modal")
+    .forEach(modal => {
+
+        modal.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    modal
+                ) {
+
+                    modal.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }
+        );
+
+    });
+
+
+/* ==================================================
+   ESC KEY
+================================================== */
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+            closeMemberModal();
+
+            closePaymentModal();
+
+            closeProfileModal();
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   WINDOW RESIZE
+================================================== */
 
 window.addEventListener(
     "resize",
@@ -2072,49 +2935,26 @@ window.addEventListener(
 );
 
 
-/* =========================
+/* ==================================================
    INITIAL LOAD
-========================= */
+================================================== */
+
+setupChartYears();
+
+loadTheme();
 
 displayMembers();
 
 displayPayments();
 
+displayRecentPayments();
+
+updatePaymentStats();
+
 updateAnalytics();
 
 loadPaymentMembers();
 
+updateExpirationAlert();
+
 updateRevenueChart();
-
-// =========================
-// DARK / LIGHT MODE
-// =========================
-
-const themeToggle = document.getElementById("themeToggle");
-
-const savedTheme = localStorage.getItem("gymTheme");
-
-if (savedTheme === "light") {
-    document.body.classList.add("light-mode");
-    themeToggle.textContent = "☀️";
-}
-
-themeToggle.addEventListener("click", function () {
-
-    document.body.classList.toggle("light-mode");
-
-    if (document.body.classList.contains("light-mode")) {
-
-        themeToggle.textContent = "☀️";
-
-        localStorage.setItem("gymTheme", "light");
-
-    } else {
-
-        themeToggle.textContent = "🌙";
-
-        localStorage.setItem("gymTheme", "dark");
-
-    }
-
-});

@@ -5,33 +5,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Gym Pro - Login</title>
+    <title>Gym Pro - Connexion</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <div class="login-container">
+    <div class="login-page">
 
-        <div class="login-box">
+        <div class="login-card">
 
-            <h1>GYM PRO</h1>
-
-            <p>Connexion à votre espace</p>
+            <div class="logo">
+                <div class="logo-circle">G</div>
+                <h1>GYM PRO</h1>
+                <p>Management System</p>
+            </div>
 
             <form id="loginForm">
 
                 <div class="form-group">
 
                     <label for="email">
-                        Email
+                        Adresse email
                     </label>
 
                     <input
                         type="email"
                         id="email"
-                        placeholder="Votre email"
+                        placeholder="admin@gympro.com"
                         required
                     >
 
@@ -54,22 +56,45 @@
                 </div>
 
 
-                <button type="submit">
+                <div
+                    id="loginError"
+                    class="login-error"
+                ></div>
+
+
+                <button
+                    type="submit"
+                    class="login-btn"
+                >
                     Se connecter
                 </button>
 
             </form>
+
+
+            <div class="login-help">
+
+                <strong>
+                    Compte administrateur
+                </strong>
+
+                <span>
+                    admin@gympro.com
+                </span>
+
+                <span>
+                    Mot de passe : admin123
+                </span>
+
+            </div>
 
         </div>
 
     </div>
 
 
-    <!-- JavaScript -->
-
     <script src="js.js"></script>
 
 </body>
 
 </html>
-
